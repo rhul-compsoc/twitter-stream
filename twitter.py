@@ -1,5 +1,5 @@
 import requests
-from constants import BEARER_TOKEN, ENDPOINT_URL, SEARCH_QUERY
+from constants import BEARER_TOKEN
 
 
 def genAuth(r):
@@ -14,10 +14,5 @@ def search(url, params):
     return dict(response.json())
 
 
-def main():
-    dict_response = search(ENDPOINT_URL, SEARCH_QUERY)
-    print(dict_response)
-
-
-if __name__ == "__main__":
-    main()
+def parse_response(search_response):
+    return [{}, {}]

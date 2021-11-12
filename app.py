@@ -1,5 +1,8 @@
+from crypt import methods
 from functools import wraps
 from flask import Flask, redirect
+
+from constants import HTTP_CODE_NOT_FOUND, HTTP_METHOD_POST
 
 
 app = Flask(__name__)
@@ -19,11 +22,6 @@ def index():
     return '<h1>Test</h1>'
 
 
-@app.route('/obs')
-def obs():
-    return '<h1>Test</h1>'
-
-
 @app.route('/login')
 def login():
     return '<h1>login</h1>'
@@ -35,7 +33,7 @@ def panel():
     return '<h1>admin</h1>'
 
 
-@app.route('/api/update_tweets')
+@app.route('/api/update_tweets', methods=[HTTP_METHOD_POST])
 @is_authenticated
 def update_tweets():
     return True
@@ -46,9 +44,9 @@ def get_tweets():
     return []
 
 
-@app.errorhandler(404)
+@app.errorhandler(HTTP_CODE_NOT_FOUND)
 def page_not_found(e):
-    return '<h1>404</h1>', 404
+    return '<h1>404</h1>', HTTP_CODE_NOT_FOUND
 
 
 if __name__ == "__main__":

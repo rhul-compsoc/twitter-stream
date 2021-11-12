@@ -2,21 +2,16 @@ from functools import wraps
 from flask import Flask, redirect
 
 
-# Initialise websever
 app = Flask(__name__)
 
 
-def root_required(func):
+def is_authenticated(func):
     @wraps(func)
-    def check_root(*args, **kwargs):
-        fornow = True
+    def check_auth(*args, **kwargs):
+        fornow = False
         if fornow:
             return redirect('/login')
-    return check_root
-
-
-def getTweets():
-    return {}
+    return check_auth
 
 
 @app.route('/')
@@ -35,9 +30,20 @@ def login():
 
 
 @app.route('/panel')
-@root_required
+@is_authenticated
 def panel():
     return '<h1>admin</h1>'
+
+
+@app.route('/api/update_tweets')
+@is_authenticated
+def update_tweets():
+    return True
+
+
+@app.route('/api/get_tweets')
+def get_tweets():
+    return []
 
 
 @app.errorhandler(404)

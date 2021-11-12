@@ -1,0 +1,2 @@
+DATABASE_FILE = "TWEETS.db"
+HASHTAG = "hackawaytest2021"

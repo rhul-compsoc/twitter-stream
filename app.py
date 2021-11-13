@@ -13,40 +13,41 @@ def is_authenticated(func):
     def check_auth(*args, **kwargs):
         fornow = False
         if fornow:
-            return redirect('/login')
+            return redirect("/login")
+
     return check_auth
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return '<h1>Test</h1>'
+    return "<h1>Test</h1>"
 
 
-@app.route('/login')
+@app.route("/login")
 def login():
-    return '<h1>login</h1>'
+    return "<h1>login</h1>"
 
 
-@app.route('/panel')
+@app.route("/panel")
 @is_authenticated
 def panel():
-    return '<h1>admin</h1>'
+    return "<h1>admin</h1>"
 
 
-@app.route('/api/update_tweets', methods=[HTTP_METHOD_POST])
+@app.route("/api/update_tweets", methods=[HTTP_METHOD_POST])
 @is_authenticated
 def update_tweets():
     return True
 
 
-@app.route('/api/get_tweets')
+@app.route("/api/get_tweets")
 def get_tweets():
     return []
 
 
 @app.errorhandler(HTTP_CODE_NOT_FOUND)
 def page_not_found(e):
-    return '<h1>404</h1>', HTTP_CODE_NOT_FOUND
+    return "<h1>404</h1>", HTTP_CODE_NOT_FOUND
 
 
 if __name__ == "__main__":

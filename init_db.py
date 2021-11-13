@@ -25,12 +25,12 @@ print('Opened database successfully in file "{}"'.format(DATABASE_FILE))
 
 connection.execute(
     """CREATE TABLE IF NOT EXISTS tweets (
-TWEET_ID                        VARCHAR(10),
-TWEET_TEXT                      VARCHAR(10),
-TWEET_AUTHOR_USERNAME           VARCHAR(10),
-TWEET_AUTHOR_NAME				VARCHAR(10),
-TWEET_TIME                      VARCHAR(10),
-AUTHORIZED						INTEGER DEFAULT 0
+	TWEET_ID                        VARCHAR(10),
+	TWEET_TEXT                      VARCHAR(10),
+	TWEET_AUTHOR_USERNAME           VARCHAR(10),
+	TWEET_AUTHOR_NAME				VARCHAR(10),
+	TWEET_TIME                      VARCHAR(10),
+	AUTHORIZED						INTEGER DEFAULT 0
 )"""
 )
 

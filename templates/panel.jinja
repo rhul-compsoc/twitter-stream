@@ -1,0 +1,21 @@
+{% extends "base.jinja" %} {% block content %}
+<style>
+	#filterButtons {
+		display: flex;
+	}
+</style>
+<h1>ADMIN PANEL</h1>
+
+<div id="filterButtons">
+	<a class="button" href="/panel?filter=all">All Tweets</a>
+	<a class="button" href="/panel?filter=good">Authorized</a>
+	<a class="button" href="/panel?filter=bad">Black Listed</a>
+</div>
+
+<div id="tweets">
+	{% for tweet in tweets %}
+	<div class="tweets">{{tweet['TWEET_TEXT']}}</div>
+	{% endfor %}
+</div>
+
+{% endblock %}

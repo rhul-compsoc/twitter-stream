@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+html {
+	--color-1: #2e3444;
+	--color-2: #3b4252;
+	--color-3: #434c5e;
+	--color-4: #4c566a;
+	--color-5: #d8dee9;
+	--color-6: #e5e9f0;
+	--color-7: #eceff4;
+	--color-8: #8fbcbb;
+	--color-9: #88c0d0;
+	--color-10: #81a1c1;
+	--color-11: #5e81ac;
+	--color-12: #bf161a;
+	--color-13: #d08770;
+	--color-14: #ebcb8b;
+	--color-15: #a3be8c;
+	--color-16: #b48ead;
+}
+
+html,
+body {
+	background-color: var(--color-1);
+	color: var(--color-13);
+	font-family: 'Montserrat', sans-serif;
+}
+
+.button {
+	padding: 8px;
+	background-color: var(--color-3);
+	transition: background-color 0.1s linear;
+	border-radius: 8px;
+	text-decoration: none;
+	color: var(--color-5);
+}
+
+.button:visited {
+	color: var(--color-5);
+}
+
+.button:hover {
+	background-color: var(--color-11);
+}

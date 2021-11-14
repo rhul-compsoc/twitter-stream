@@ -59,7 +59,7 @@ def panel():
 
     tweets = query_db_auth(sql_selector[filter_type])
 
-    return render_template("panel.jinja", tweets=tweets)
+    return render_template("panel.jinja", tweets=tweets, filter_type=filter_type)
 
 
 @app.route("/update_tweets", methods=[HTTP_METHOD_POST])

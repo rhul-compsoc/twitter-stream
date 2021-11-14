@@ -21,8 +21,11 @@ html {
 html,
 body {
 	background-color: var(--color-1);
-	color: var(--color-13);
+	color: var(--color-5);
 	font-family: 'Montserrat', sans-serif;
+}
+* {
+	box-sizing: border-box;
 }
 
 .button {
@@ -31,7 +34,6 @@ body {
 	transition: background-color 0.1s linear;
 	border-radius: 8px;
 	text-decoration: none;
-	color: var(--color-5);
 }
 
 .button:visited {
@@ -40,4 +42,10 @@ body {
 
 .button:hover {
 	background-color: var(--color-11);
+}
+
+.center {
+	margin: 25px 0;
+	display: flex;
+	justify-content: center;
 }

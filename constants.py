@@ -29,3 +29,5 @@ HTTP_METHOD_GET = "GET"
 
 # ISO 8601 strptime
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%f%z"
+
+SQL_SELECT_AUTH_TYPE = {"all": "AUTHORIZED", "bad": "0", "good": "1"}

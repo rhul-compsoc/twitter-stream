@@ -31,20 +31,12 @@ def update_db():
 
     cursor.execute("SELECT * FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
     lastest_tweet = cursor.fetchone()
-    lastest_tweet_id = (
-        {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
-    )
+    lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
 
-    print(lastest_tweet_id)
-    new_tweets = parse_response(
-        fetch(ENDPOINT_URL, {**SEARCH_QUERY, **lastest_tweet_id})
-    )
+    new_tweets = parse_response(fetch(ENDPOINT_URL, {**SEARCH_QUERY, **lastest_tweet_id}))
 
-    print(new_tweets)
     for tweet in new_tweets:
-        cursor.execute(
-            "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)", tuple(tweet.values())
-        )
+        cursor.execute("INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)", tuple(tweet.values()))
 
     con.commit()
     con.close()

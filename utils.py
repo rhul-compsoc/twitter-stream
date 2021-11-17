@@ -9,6 +9,10 @@ def genAuth(r):
     return r
 
 
+def get_bearer(code: str, session_state: str) -> str:
+    return ""
+
+
 def fetch(url, params):
     response = requests.get(url, auth=genAuth, params=params)
     if response.status_code != 200:

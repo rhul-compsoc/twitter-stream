@@ -1,11 +1,11 @@
 from functools import wraps
 from flask import Flask, redirect, render_template, request
 
-
 from constants import (
     ENDPOINT_URL,
     HTTP_CODE_NOT_FOUND,
     HTTP_METHOD_POST,
+    OAUTH_AUTHORISE,
     SEARCH_QUERY,
     SQL_SELECT_AUTH_TYPE,
 )
@@ -18,7 +18,7 @@ app = Flask(__name__)
 def is_authenticated(func):
     @wraps(func)
     def check_auth(*args, **kwargs):
-        fornow = False
+        fornow = True
         if fornow:
             return redirect("/login")
         return func(*args, **kwargs)
@@ -63,7 +63,7 @@ def index():
 
 @app.route("/login")
 def login():
-    return "<h1>login</h1>"
+    return render_template("login.jinja", auth_url=OAUTH_AUTHORISE)
 
 
 @app.route("/panel")
@@ -91,6 +91,9 @@ def update_tweets():
 
 @app.route("/redirect")
 def oauth_redirect():
+    print("site")
+    print(request.args.get("code")[:20])
+    print(request.args.get("session_state"))
     return "<h1>henlo</h1>"
 
 

@@ -1,6 +1,6 @@
 # twitter-stream
 
-This is a project that allows you to serve a moderated twitter timeline from a chosen hashtag
+This is a project that serves a moderated twitter timeline from a chosen hashtag
 
 ## Running
 

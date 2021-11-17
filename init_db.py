@@ -28,14 +28,7 @@ def main(connection, cursor):
             for dummy_tweet in dummy_tweets:
                 cursor.execute(
                     "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)",
-                    (
-                        dummy_tweet["TWEET_ID"],
-                        dummy_tweet["TWEET_TEXT"],
-                        dummy_tweet["TWEET_AUTHOR_USERNAME"],
-                        dummy_tweet["TWEET_AUTHOR_NAME"],
-                        dummy_tweet["TWEET_TIME"],
-                        dummy_tweet["AUTHORIZED"],
-                    ),
+                    tuple(dummy_tweet),
                 )
             connection.commit()
     else:

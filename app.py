@@ -30,15 +30,21 @@ def update_db():
     con, cursor = get_connection()
 
     cursor.execute("SELECT * FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
-    lastest_tweet_id = cursor.fetchone()["TWEET_ID"]
+    lastest_tweet = cursor.fetchone()
+    lastest_tweet_id = (
+        {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
+    )
 
+    print(lastest_tweet_id)
     new_tweets = parse_response(
-        fetch(ENDPOINT_URL, {**SEARCH_QUERY, "since_id": lastest_tweet_id})
+        fetch(ENDPOINT_URL, {**SEARCH_QUERY, **lastest_tweet_id})
     )
 
     print(new_tweets)
     for tweet in new_tweets:
-        cursor.execute("INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)", tuple(tweet.values()))
+        cursor.execute(
+            "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)", tuple(tweet.values())
+        )
 
     con.commit()
     con.close()
@@ -89,6 +95,16 @@ def panel():
 @is_authenticated
 def update_tweets():
     return "<h1>update</h1>"
+
+
+@app.route("/redirect")
+def oauth_redirect():
+    return "<h1>henlo</h1>"
+
+
+@app.route("/logout")
+def logout():
+    return "<h1>good bye</h1>"
 
 
 @app.errorhandler(HTTP_CODE_NOT_FOUND)

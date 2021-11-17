@@ -4,17 +4,17 @@ from constants import BEARER_TOKEN, DATABASE_FILE, TIME_FORMAT
 from datetime import datetime
 
 
-def genAuth(r):
-    r.headers["Authorization"] = f"Bearer {BEARER_TOKEN}"
+def gen_bearer(r, token):
+    r.headers["Authorization"] = f"Bearer {token}"
     return r
 
 
-def get_bearer(code: str, session_state: str) -> str:
-    return ""
+def gen_twitter_auth(r):
+    return gen_bearer(r, BEARER_TOKEN)
 
 
-def fetch(url, params):
-    response = requests.get(url, auth=genAuth, params=params)
+def fetch(url, **kwargs):
+    response = requests.get(url, **kwargs)
     if response.status_code != 200:
         raise Exception(response.status_code, response.text)
     return dict(response.json())

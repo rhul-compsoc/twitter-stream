@@ -1,25 +1,43 @@
+from datetime import datetime, timedelta
 from functools import wraps
-from flask import Flask, redirect, render_template, request
+import secrets
+from urllib.parse import urlencode
+import requests
+from flask import Flask, flash, make_response, redirect, render_template, request, url_for
 
 from constants import (
+    BEARER_TOKEN,
     ENDPOINT_URL,
     HTTP_CODE_NOT_FOUND,
     HTTP_METHOD_POST,
-    OAUTH_AUTHORISE,
+    OAUTH_AUTHORIZE,
+    OAUTH_TOKEN_URL,
     SEARCH_QUERY,
     SQL_SELECT_AUTH_TYPE,
+    TOKEN_PARAMS,
 )
-from utils import get_connection, fetch, parse_response
+from utils import gen_bearer, gen_twitter_auth, get_connection, fetch, parse_response
 
 
 app = Flask(__name__)
+app.secret_key = secrets.token_urlsafe(16)
 
-
+# refactor
 def is_authenticated(func):
     @wraps(func)
     def check_auth(*args, **kwargs):
-        fornow = True
-        if fornow:
+        access_token = request.cookies.get("access_token")
+        authorized = False
+        if access_token:
+            try:
+                res = fetch(
+                    "https://graph.microsoft.com/v1.0/me",
+                    auth=lambda r: gen_bearer(r, access_token),
+                )
+                authorized = True
+            except Exception as e:
+                authorized = False
+        if not authorized:
             return redirect("/login")
         return func(*args, **kwargs)
 
@@ -33,7 +51,13 @@ def update_db():
     lastest_tweet = cursor.fetchone()
     lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
 
-    new_tweets = parse_response(fetch(ENDPOINT_URL, {**SEARCH_QUERY, **lastest_tweet_id}))
+    new_tweets = parse_response(
+        fetch(
+            ENDPOINT_URL,
+            params={**SEARCH_QUERY, **lastest_tweet_id},
+            auth=gen_twitter_auth,
+        )
+    )
 
     for tweet in new_tweets:
         cursor.execute("INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)", tuple(tweet.values()))
@@ -61,20 +85,11 @@ def index():
     return render_template("timeline.jinja", tweets=query_db_auth("1"))
 
 
-@app.route("/login")
-def login():
-    return render_template("login.jinja", auth_url=OAUTH_AUTHORISE)
-
-
 @app.route("/panel")
 @is_authenticated
 def panel():
     update_db()
-    if not ("filter" in request.args):
-        return redirect("/panel?filter=all")
-
-    filter_type = request.args["filter"]
-
+    filter_type = request.args.get("filter")
     if not (filter_type in SQL_SELECT_AUTH_TYPE):
         return redirect("/panel?filter=all")
 
@@ -89,12 +104,44 @@ def update_tweets():
     return "<h1>update</h1>"
 
 
+# AUTH GOODNESS
+
+
+@app.route("/login")
+def login():
+
+    return render_template("login.jinja", auth_url=OAUTH_AUTHORIZE)
+
+
 @app.route("/redirect")
 def oauth_redirect():
-    print("site")
-    print(request.args.get("code")[:20])
-    print(request.args.get("session_state"))
-    return "<h1>henlo</h1>"
+    code = request.args.get("code")
+    if code == None:
+        flash("Invalid query params", "error")
+        return redirect("/login")
+
+    response = requests.post(
+        OAUTH_TOKEN_URL,
+        {
+            **TOKEN_PARAMS,
+            "code": code,
+        },
+    )
+
+    if response.status_code == 200:
+        json_response = dict(response.json())
+        res = make_response()
+
+        res.set_cookie(
+            "access_token",
+            value=json_response["access_token"],
+            expires=datetime.now() + timedelta(seconds=json_response["expires_in"]),
+        )
+        res.headers["location"] = url_for("panel")
+        return res, 302
+    else:
+        flash("Failed, try again", "error")
+        return redirect("/login")
 
 
 @app.route("/logout")

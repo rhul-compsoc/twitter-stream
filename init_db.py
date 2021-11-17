@@ -1,5 +1,5 @@
 from constants import DATABASE_FILE, ENDPOINT_URL, SEARCH_QUERY
-from utils import get_connection, fetch, parse_response
+from utils import gen_twitter_auth, get_connection, fetch, parse_response
 
 
 def main(connection, cursor):
@@ -23,7 +23,9 @@ def main(connection, cursor):
 
         if create_dummy_values == "y" or create_dummy_values == "yes":
             print("Creating dummy values in database...")
-            dummy_tweets = parse_response(fetch(ENDPOINT_URL, SEARCH_QUERY))[-4:]
+            dummy_tweets = parse_response(
+                fetch(ENDPOINT_URL, params=SEARCH_QUERY, auth=gen_twitter_auth)
+            )[-4:]
 
             for dummy_tweet in dummy_tweets:
                 cursor.execute(

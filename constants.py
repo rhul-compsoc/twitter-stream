@@ -38,9 +38,29 @@ HTTP_METHOD_POST = "POST"
 HTTP_METHOD_GET = "GET"
 
 # Office 365
-OAUTH_AUTHORISE = (
-    "https://login.microsoftonline.com/252e00d0-e60f-47dd-90f6-5a6acf2b08b0/oauth2/v2.0/authorize?"
+OFFICE_365_TENANT_ID = fetch_from_env("OFFICE_365_TENANT_ID")
+OFFICE_365_CLIENT_ID = fetch_from_env("OFFICE_365_CLIENT_ID")
+OFFICE_365_REDIRECT_URI = fetch_from_env("OFFICE_365_REDIRECT_URI")
+OFFICE_365_CLIENT_SECRET = fetch_from_env("OFFICE_365_CLIENT_SECRET")
+OAUTH_AUTHORIZE = (
+    f"https://login.microsoftonline.com/{OFFICE_365_TENANT_ID}/oauth2/v2.0/authorize?"
     + urlencode(
-        {"client_id": fetch_from_env("CLIENT_ID"), "response_type": "code", "scope": "User.Read"}
+        {
+            "client_id": OFFICE_365_CLIENT_ID,
+            "response_type": "code",
+            "response_mode": "query",
+            "scope": "User.Read",
+            "prompt": "select_account",
+            "redirect_uri": OFFICE_365_REDIRECT_URI,
+        }
     )
 )
+
+
+OAUTH_TOKEN_URL = f"https://login.microsoftonline.com/{OFFICE_365_TENANT_ID}/oauth2/v2.0/token"
+TOKEN_PARAMS = {
+    "client_id": OFFICE_365_CLIENT_ID,
+    "redirect_uri": OFFICE_365_REDIRECT_URI,
+    "grant_type": "authorization_code",
+    "client_secret": OFFICE_365_CLIENT_SECRET,
+}

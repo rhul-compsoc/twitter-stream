@@ -18,14 +18,49 @@ html {
 	--color-16: #b48ead;
 }
 
+* {
+	box-sizing: border-box;
+}
+
 html,
 body {
 	background-color: var(--color-1);
 	color: var(--color-5);
 	font-family: 'Montserrat', sans-serif;
+	padding: 0;
+	margin: 0;
+	scroll-behavior: smooth;
 }
-* {
-	box-sizing: border-box;
+
+html,
+body,
+.main-content {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
+.main-content {
+	display: flex;
+	flex-direction: column;
+}
+
+.center {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	margin: 25px 0;
+	text-align: center;
+	align-items: center;
+}
+
+.big-center {
+	display: flex;
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
 
 .button {
@@ -34,6 +69,7 @@ body {
 	transition: background-color 0.1s linear;
 	border-radius: 8px;
 	text-decoration: none;
+	color: var(--color-5);
 }
 
 .button:visited {
@@ -42,12 +78,4 @@ body {
 
 .button:hover {
 	background-color: var(--color-11);
-}
-
-.center {
-	margin: 25px 0;
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	text-align: center;
 }

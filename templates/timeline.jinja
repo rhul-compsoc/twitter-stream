@@ -4,9 +4,11 @@ content %}
 	@media only screen and (max-height: 100px) {
 		html {
 			background-color: lightblue;
+			overflow-y: hidden;
 		}
 		#tweets {
 			display: flex;
+			flex-direction: row;
 		}
 		.tweet > p {
 			max-width: 500px;

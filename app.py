@@ -1,7 +1,6 @@
 from flask import Flask, redirect, render_template, request
 from constants import (
     ENDPOINT_URL,
-    HTTP_CODE_BAD_REQUEST,
     HTTP_CODE_NOT_FOUND,
     HTTP_METHOD_POST,
     SEARCH_QUERY,
@@ -23,15 +22,16 @@ def add_new_tweets():
     # if there are no tweets in the db, prevent Nonetype subscription
     lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
 
-    new_tweets = parse_response(
-        fetch(
-            ENDPOINT_URL,
-            params={**SEARCH_QUERY, **lastest_tweet_id},
-            auth=gen_twitter_auth,
-        )
+    cursor.executemany(
+        "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)",
+        parse_response(
+            fetch(
+                ENDPOINT_URL,
+                params={**SEARCH_QUERY, **lastest_tweet_id},
+                auth=gen_twitter_auth,
+            )
+        ),
     )
-
-    cursor.executemany("INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)", new_tweets)
 
     con.commit()
 

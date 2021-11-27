@@ -1,3 +1,25 @@
-{% extends "base.jinja" %} {% block content %} {% for tweet in tweets %}
-<p>{{tweet['TWEET_TEXT']}}</p>
-{% endfor %} {% endblock %}
+{% extends "base.jinja" %} {% block title %}Twitter Wall{% endblock %} {% block
+content %}
+<style>
+	@media only screen and (max-height: 100px) {
+		html {
+			background-color: lightblue;
+		}
+		#tweets {
+			display: flex;
+		}
+		.tweet > p {
+			max-width: 500px;
+			width: fit-content;
+		}
+	}
+</style>
+
+<div id="tweets">
+	{% for tweet in tweets %}
+	<div class="tweet">
+		<p>{{tweet['TWEET_TEXT']}}</p>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

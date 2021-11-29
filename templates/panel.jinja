@@ -1,27 +1,58 @@
 {% extends "base.jinja" %} {% block title %}Twitter Wall: Admin Panel{% endblock
 %} {% block content %}
 
+<style>
+	#header {
+		background: var(--color-4);
+		position: sticky;
+		top: 0;
+	}
+	#header > h1 {
+		font-size: 3rem;
+		text-align: center;
+	}
+	#filterButtons {
+		display: flex;
+		justify-content: space-around;
+	}
+	#filterButtons > a {
+		padding: 10px 15px;
+		margin: 10px;
+		background: var(--color-2);
+		text-decoration: none;
+		border-radius: 8px;
+		transition: color 0.2s, background 0.2s;
+	}
+	#filterButtons > a.active {
+		background: var(--color-11);
+	}
+	#filterButtons > a:hover {
+		background: var(--color-6);
+		color: var(--color-1);
+	}
+	#tweets {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.tweet {
+		width: 70%;
+	}
+</style>
+
 <div id="header">
 	<h1>ADMIN PANEL</h1>
-</div>
-<div style="position: sticky; top: 0">
-	<div class="center">
-		<a
-			href=""
-			class="button"
-			style="border: none; font-size: 15px; font-weight: 500">
-			Refresh Tweet Database
-		</button>
-	</div>
-	<ul id="filterButtons">
+
+	<div id="filterButtons">
+		<a href=""> Refresh Tweet Database </a>
+
 		{% set filter_buttons = [ ('all', 'All Tweets'), ('good', 'Authorized'),
 		('bad', 'Black Listed') ] -%} {% for filter, text in filter_buttons %}
-		<li class="{% if filter==filter_type %}active{%endif%}">
-			<a class="button" href="/panel?filter={{filter}}">{{text}}</a>
-		</li>
+        <a {%if filter==filter_type %} class="active" {% endif %} href="/panel?filter={{filter}}">{{text}}</a>
 		{% endfor %}
-	</ul>
+	</div>
 </div>
+
 <div id="tweets">
 	{% for tweet in tweets %}
 	<div class="tweet {%if tweet['AUTHORIZED']==0%}bad{%endif%}">

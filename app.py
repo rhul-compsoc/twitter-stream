@@ -90,9 +90,6 @@ def panel():
     if not (filter_type in SQL_SELECT_AUTH_TYPE):
         return redirect("/panel?filter=all")
 
-    # check for any new tweets and add them to the db
-    add_new_tweets()
-
     return render_template(
         "panel.jinja",
         tweets=fetch_by_auth(SQL_SELECT_AUTH_TYPE[filter_type]),

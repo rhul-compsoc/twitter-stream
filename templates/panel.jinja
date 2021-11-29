@@ -14,6 +14,7 @@
 	#filterButtons {
 		display: flex;
 		justify-content: space-around;
+		flex-wrap: wrap;
 	}
 	#filterButtons > a {
 		padding: 10px 15px;
@@ -38,6 +39,11 @@
 	.tweet {
 		width: 70%;
 	}
+
+	.tweet > p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 </style>
 
 <div id="header">
@@ -48,7 +54,8 @@
 
 		{% set filter_buttons = [ ('all', 'All Tweets'), ('good', 'Authorized'),
 		('bad', 'Black Listed') ] -%} {% for filter, text in filter_buttons %}
-        <a {%if filter==filter_type %} class="active" {% endif %} href="/panel?filter={{filter}}">{{text}}</a>
+		<!-- prettier-ignore -->
+		<a {%if filter in filter_type %} class="active" {% endif %} href="/panel?filter={{filter}}">{{text}}</a>
 		{% endfor %}
 	</div>
 </div>

@@ -1,5 +1,8 @@
-{% extends "base.jinja" %} {% block title %}Twitter Wall: Admin Panel{% endblock
-%} {% block content %}
+{% extends "base.jinja" %}
+<!--   -->
+{% block title %} Twitter Wall: Admin Panel {% endblock %}
+<!--   -->
+{% block content %}
 
 <style>
 	#header {
@@ -23,6 +26,8 @@
 		text-decoration: none;
 		border-radius: 8px;
 		transition: color 0.2s, background 0.2s;
+		box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+			rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 	}
 	#filterButtons > a.active {
 		background: var(--color-11);
@@ -38,6 +43,16 @@
 	}
 	.tweet {
 		width: 70%;
+		margin: 15px 0;
+		padding: 10px;
+		box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+			rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+		border-radius: 15px;
+		background: var(--color-15);
+	}
+
+	.tweet.bad {
+		background: var(--color-13);
 	}
 
 	.tweet > p {
@@ -53,7 +68,9 @@
 		<a href=""> Refresh Tweet Database </a>
 
 		{% set filter_buttons = [ ('all', 'All Tweets'), ('good', 'Authorized'),
-		('bad', 'Black Listed') ] -%} {% for filter, text in filter_buttons %}
+		('bad', 'Black Listed') ] -%}
+		<!-- ideally i would use list virtualisation for this but cba cause im not using react or something more advanced -->
+		{% for filter, text in filter_buttons %}
 		<!-- prettier-ignore -->
 		<a {%if filter in filter_type %} class="active" {% endif %} href="/panel?filter={{filter}}">{{text}}</a>
 		{% endfor %}

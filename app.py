@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request
+from flask import Flask, redirect, render_template, request, jsonify
 from constants import (
     ENDPOINT_URL,
     HTTP_CODE_NOT_FOUND,
@@ -8,17 +8,19 @@ from constants import (
 )
 from utils import gen_twitter_auth, get_connection, fetch, parse_response
 
-
 app = Flask(__name__)
+app.config["JSON_SORT_KEYS"] = False
 
 # TODO: pagination
 # since this is an expensive operation, maybe worth debouncing?
+@app.route("/update_db", methods=[HTTP_METHOD_POST])
 def add_new_tweets():
     con, cursor = get_connection()
 
-    cursor.execute("SELECT * FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
+    cursor.execute("SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
     lastest_tweet = cursor.fetchone()
 
+    print(lastest_tweet)
     # if there are no tweets in the db, prevent Nonetype subscription
     lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
 
@@ -36,6 +38,7 @@ def add_new_tweets():
     con.commit()
 
     con.close()
+    return redirect("/panel")
 
 
 # TODO: refactor this function, im not a fan
@@ -56,7 +59,7 @@ def fetch_by_auth(authType: str):
     return tweets
 
 
-def set_tweet_auth(tweet_id, auth):
+def set_tweet_auth(auth, tweet_id):
     con, cursor = get_connection()
 
     cursor.execute(
@@ -79,7 +82,7 @@ def update_tweet_auth():
     validated = auth.isdecimal() and (0 < int(auth) and int(auth) <= 1)
 
     if validated:
-        set_tweet_auth(tweet_id, int(auth))
+        set_tweet_auth(int(auth), tweet_id)
     # else flash an error
     return redirect(request.referrer or "/panel")
 
@@ -88,7 +91,7 @@ def update_tweet_auth():
 def panel():
     filter_type = request.args.get("filter")
     if not (filter_type in SQL_SELECT_AUTH_TYPE):
-        return redirect("/panel?filter=all")
+        return redirect("/panel?filter=bad")
 
     return render_template(
         "panel.jinja",
@@ -97,9 +100,14 @@ def panel():
     )
 
 
+@app.route("/good_tweets")
+def good_tweets():
+    return jsonify(fetch_by_auth(SQL_SELECT_AUTH_TYPE["good"]))
+
+
 @app.route("/")
 def index():
-    return render_template("timeline.jinja", tweets=fetch_by_auth(SQL_SELECT_AUTH_TYPE["good"]))
+    return render_template("wall.jinja")
 
 
 @app.route("/login")

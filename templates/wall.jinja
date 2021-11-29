@@ -1,0 +1,68 @@
+{% extends "base.jinja" %}
+<!-- prettier-ignore -->
+{% block title %}Twitter Wall{% endblock %}
+<!-- prettier-ignore -->
+{% block content %}
+
+<style>
+	@media only screen and (max-height: 100px) {
+		html {
+			background-color: lightblue;
+			overflow-y: hidden;
+		}
+		#tweets {
+			display: flex;
+			flex-direction: row-reverse;
+		}
+		.tweet > p {
+			max-width: 500px;
+			width: fit-content;
+		}
+	}
+</style>
+
+<div id="tweets"></div>
+
+<script>
+	let latestId;
+	function createTweet({ TWEET_TEXT, TWEET_AUTHOR_USERNAME }) {
+		const tweetContainer = document.createElement('div');
+		tweetContainer.classList.add('tweet');
+
+		const tweetText = document.createElement('p');
+		tweetText.innerText = TWEET_TEXT;
+
+		const tweetAuthor = document.createElement('p');
+		tweetAuthor.innerText = TWEET_AUTHOR_USERNAME;
+
+		tweetContainer.appendChild(tweetAuthor);
+		tweetContainer.appendChild(tweetText);
+
+		return tweetContainer;
+	}
+
+	const tweetWrapper = document.getElementById('tweets');
+	function addTweets(data) {
+		data.forEach((tweet) => {
+			tweetWrapper.appendChild(createTweet(tweet));
+		});
+	}
+
+	function fetch_tweets() {
+		fetch('/good_tweets')
+			.then((res) => res.json())
+			.then((jsonResponse) => {
+				latestId = jsonResponse[0].TWEET_TIME;
+				addTweets(jsonResponse);
+			});
+	}
+
+	fetch_tweets();
+
+	setInterval(() => {
+		console.log('fetching');
+		fetch_tweets();
+	}, 30000);
+</script>
+
+{% endblock %}

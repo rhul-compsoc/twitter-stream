@@ -23,6 +23,7 @@ SEARCH_QUERY = {
     "expansions": "author_id",
     # ISO 8601
     "tweet.fields": "created_at",
+    "max_results": 100,
 }
 # ISO 8601 strptime
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%f%z"

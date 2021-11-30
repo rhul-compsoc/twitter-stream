@@ -39,7 +39,7 @@ def parse_response(search_response):
             tweet["text"],
             *authors[tweet["author_id"]],
             created_at_convert(tweet["created_at"]),
-            0,
+            2,
         )
         for tweet in search_response["data"]
     ]
@@ -57,8 +57,7 @@ def dict_factory(cursor, row):
 def get_connection():
     try:
         connection = sqlite3.connect(DATABASE_FILE)
-        # connection.set_trace_callback(print) <--- useful for debugging
-
+        # connection.set_trace_callback(print) # <--- useful for debugging
         connection.row_factory = dict_factory
         connection.text_factory = lambda x: x.decode("utf-8")
     except sqlite3.Error as err:
@@ -68,12 +67,14 @@ def get_connection():
 
 def print_all():
     con, cur = get_connection()
-
     cur.execute("SELECT * FROM tweets")
     print(cur.fetchall())
     con.close()
 
 
-# good version
-def execute_many():
-    return None
+def execute_many(statement: str, data: tuple[any]):
+    con, cur = get_connection()
+    for row in data:
+        cur.execute(statement, row)
+    con.commit()
+    con.close()

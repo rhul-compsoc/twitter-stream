@@ -11,12 +11,13 @@ def fetch_from_env(key: str) -> str:
 # DATABASE
 DATABASE_FILE = "TWEETS.db"
 HASHTAG = "BlackFriday"
-SQL_SELECT_AUTH_TYPE = {"all": "AUTHORIZED", "bad": "0", "good": "1"}
+SQL_SELECT_AUTH_TYPE = {"bad": "0", "good": "1", "new": "2"}
 
 # TWITTER
 BEARER_TOKEN = fetch_from_env("BEARER_TOKEN")
 # https://developer.twitter.com/en/docs/twitter-api/tweets/search/introduction
 ENDPOINT_URL = "https://api.twitter.com/2/tweets/search/recent"
+MAX_BATCH = 400
 # @TODO: exclude any tweet with url/pictures
 SEARCH_QUERY = {
     "query": f"#{HASHTAG}",

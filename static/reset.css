@@ -17,6 +17,9 @@ html {
 	--color-14: #ebcb8b;
 	--color-15: #a3be8c;
 	--color-16: #b48ead;
+
+	--box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+		rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126

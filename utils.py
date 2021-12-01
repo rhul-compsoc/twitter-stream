@@ -20,28 +20,24 @@ def fetch(url, **kwargs):
     return dict(response.json())
 
 
-# TODO: optismise by creating an authors database
+# TODO: optismise by creating an authors table
 def parse_response(search_response):
-    print(search_response)
     if search_response["meta"]["result_count"] == 0:
         return []
 
     authors = {
-        author["id"]: {
-            "TWEET_AUTHOR_USERNAME": author["username"],
-            "TWEET_AUTHOR_NAME": author["name"],
-        }
+        author["id"]: (author["username"], author["name"], author["profile_image_url"])
         for author in search_response["includes"]["users"]
     }
 
     return [
-        {
-            "TWEET_ID": tweet["id"],
-            "TWEET_TEXT": tweet["text"],
-            **authors[tweet["author_id"]],
-            "TWEET_TIME": created_at_convert(tweet["created_at"]),
-            "AUTHORIZED": 0,
-        }
+        (
+            tweet["id"],
+            tweet["text"],
+            *authors[tweet["author_id"]],
+            created_at_convert(tweet["created_at"]),
+            2,
+        )
         for tweet in search_response["data"]
     ]
 
@@ -58,7 +54,24 @@ def dict_factory(cursor, row):
 def get_connection():
     try:
         connection = sqlite3.connect(DATABASE_FILE)
+        # connection.set_trace_callback(print) # <--- useful for debugging
         connection.row_factory = dict_factory
+        connection.text_factory = lambda x: x.decode("utf-8")
     except sqlite3.Error as err:
         print("Error connecting to database", err)
     return connection, connection.cursor()
+
+
+def print_all():
+    con, cur = get_connection()
+    cur.execute("SELECT * FROM tweets")
+    print(cur.fetchall())
+    con.close()
+
+
+def execute_many(statement: str, data: tuple[any]):
+    con, cur = get_connection()
+    for row in data:
+        cur.execute(statement, row)
+    con.commit()
+    con.close()

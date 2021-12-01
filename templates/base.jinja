@@ -2,15 +2,16 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<link href="/static/app.css" rel="stylesheet" type="text/css" />
+		<link href="/static/reset.css" rel="stylesheet" type="text/css" />
+		<link href="/static/global.css" rel="stylesheet" type="text/css" />
 		<link
-			href="static/favicon.ico"
+			href="static/icon-512x512.png"
 			rel="shortcut icon"
 			type="image/x-icon" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Twitter-Board</title>
+		<title>{% block title %}{% endblock %}</title>
 	</head>
 	<body>
-		<div class="main-content">{% block content %}{% endblock %}</div>
+		<main class="main-content">{% block content %}{% endblock %}</main>
 	</body>
 </html>

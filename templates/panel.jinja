@@ -1,91 +1,174 @@
-{% extends "base.jinja" %} {% block content %}
+{% extends "base.jinja" %}
+<!--   -->
+{% block title %} Twitter Wall: Admin Panel {% endblock %}
+<!--   -->
+{% block content %}
+
 <style>
 	#header {
-		display: flex;
-		align-items: center;
+		background: var(--color-4);
+		position: sticky;
+		top: 0;
+		box-shadow: var(--box-shadow);
 	}
-	#header > pre {
+	#header > h1 {
+		font-size: 3rem;
 		text-align: center;
-		color: var(--color-13);
-	}
-	
-	#title {
-		margin-left: 25px;
-	}
-	#title * {
-		color: var(--color-15);
-	}#title > ul{
-		list-style-position: inside;
-		padding-left: 0px;
-	}
-	#title > h1{
-		margin: 5px 0;
 	}
 	#filterButtons {
 		display: flex;
-		justify-content: space-evenly;
-		list-style-type: none;
+		justify-content: space-around;
+		flex-wrap: wrap;
+		padding: 10px;
 	}
-	#filterButtons > li.active a {
-		background-color: var(--color-11);
+	#filterButtons > a,
+	#filterButtons > form > input {
+		padding: 10px 15px;
+		margin: 10px;
+		background: var(--color-2);
+		text-decoration: none;
+		border-radius: 8px;
+		transition: color 0.2s, background 0.2s;
+		box-shadow: var(--box-shadow);
+		border: none;
+		font-weight: 400;
+		font-size: 1rem;
+		cursor: pointer;
+	}
+	#filterButtons > a.active {
+		background: var(--color-11);
+	}
+	#filterButtons > a:hover,
+	#filterButtons > form > input:hover {
+		background: var(--color-6);
+		color: var(--color-1);
 	}
 	#tweets {
-		margin: 25px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.tweet {
+		width: 70%;
+		margin: 15px 0;
+		box-shadow: rgba(0, 0, 0, 0.26) 0px 12px 30px 4px;
+		border-radius: 20px;
+		background: var(--color-11);
+		display: flex;
+		flex-direction: row;
+		overflow: hidden;
+	}
+
+	.authButtons > form {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 50px;
+		height: 50%;
+	}
+
+	.authButtons > form > button {
+		height: 100%;
+		width: 100%;
+		border: none;
+		cursor: pointer;
+		padding: 0;
+	}
+
+	.authButtons > form > button.tick {
+		background: var(--color-15);
+	}
+
+	.authButtons > form > button.cross {
+		background: var(--color-13);
+	}
+
+	.authButtons > form > button > svg {
+		height: 70%;
+		width: 70%;
+		fill: white;
+		transition: fill ease 0.2s;
+	}
+
+	.authButtons > form > button:hover > svg {
+		fill: black;
+	}
+
+	.tweet.good {
+		background: var(--color-15);
+	}
+
+	.tweet.bad {
+		background: var(--color-13);
+	}
+
+	.tweet > p {
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 </style>
+
 <div id="header">
-	<pre>
-`%lt;FqKfKqo^`
-,}WqL_     _iqW},
-:f6y!             !J6f=
-cQ,                   _gu
-@?      =_    {y  `H,  r@
-@r   .cRJ'   rB_  9K   <@
-@r  ,@a     "@!  f8    ^@
-@r   'u0u' `Bi  vB.    ^@
-@?      =, }z  `D,     r@
-uQ,                   ,Qc
-=f6y!             !J6h=
-_{Wq{_     _iqW},
-!tWKhKWj~
-</pre
-	>
-	<div id="title">
-		<h1>ADMIN PANEL</h1>
-		<h3>Keybinds</h3>
-		<ul title="Keybinds">
-			<li>Press <b>R</b> to refresh the page.</li>
-			<li>Press <b>C</b> to filter by Authorized tweets.</li>
-			<li>Press <b>B</b> to filter by Black listed tweets.</li>
-			<li>Press <b>J</b> to go down.</li>
-			<li>Press <b>K</b> to go up.</li>
-			<li>Press <b>Y</b> to Authorize the selected tweet</li>
-			<li>Press <b>N</b> to Black list the selected tweet</li>
-			<li>Alternatively, you can just use your mouse (smh my head)</li>
-		</ul>
+	<h1>ADMIN PANEL</h1>
+
+	<div id="filterButtons">
+		<form action="/update_db" method="post">
+			<input type="submit" value="Refresh Tweet Database" />
+		</form>
+
+		{% set filter_buttons = [ ('NEW','To Be Sorted'),('GOOD', 'Authorized'),
+		('BAD', 'Black Listed') ] -%} {# ideally i would use list virtualisation
+		for this but cba cause im not using react or something more advanced #}
+		{% for filter, text in filter_buttons %}
+		<!-- prettier-ignore -->
+		<a {%if filter in filter_type %} class="active" {% endif %} href="/panel?filter={{filter}}">{{text}}</a>
+		{% endfor %}
 	</div>
 </div>
 
-<div class="center">
-	<a href="" class="button">Refresh Tweet Database</a>
-</div>
-
-<ul id="filterButtons">
-	{% set filter_buttons = [ 
-		('all', 'All Tweets'),
-		('good', 'Authorized'),
-		('bad', 'Black Listed') ] 
-	-%} 
-	{% for filter, text in filter_buttons %}
-	<li {% if filter==filter_type %} class="active" {% endif%}>
-		<a class="button" href="/panel?filter={{filter}}">{{text}}</a>
-	</li>
-	{% endfor %}
-</ul>
-
 <div id="tweets">
 	{% for tweet in tweets %}
-	<div class="tweets">{{tweet['TWEET_TEXT']}}</div>
+	<div class="tweet {%if tweet['AUTHORIZED'] == 0 %} bad {%elif tweet['AUTHORIZED'] == 1 %} good {%endif%}">
+        <img src="{{tweet['TWEET_AUTHOR_PF_LINK']}}">
+		<div style="padding: 15px; flex: 1">
+			<h2>
+				{{tweet['TWEET_AUTHOR_USERNAME']}} -
+				{{tweet['TWEET_AUTHOR_NAME']}}
+			</h2>
+			<p>{{tweet['TWEET_TEXT']}}</p>
+		</div>
+		<div class="authButtons">
+			<form
+				action="/update_tweet_auth?id={{tweet['TWEET_ID']}}&auth=1"
+				method="post">
+				<button class="tick">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24">
+						<path
+							d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
+					</svg>
+				</button>
+			</form>
+
+			<form
+				action="/update_tweet_auth?id={{tweet['TWEET_ID']}}&auth=0"
+				method="post">
+				<button class="cross">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24">
+						<path
+							d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
+					</svg>
+				</button>
+			</form>
+		</div>
+	</div>
 	{% endfor %}
 </div>
 

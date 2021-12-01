@@ -11,5 +11,3 @@ This is a project that serves a moderated twitter timeline from a chosen hashtag
 -   Start the server with `python3 app.py`
 
 ## TODO
-
--   set up working auth (just use a decorator for protected routes)

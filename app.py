@@ -1,3 +1,4 @@
+from functools import wraps
 import json
 import os
 
@@ -36,6 +37,17 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 
+def protect_route(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        token = _get_token_from_cache(SCOPE)
+        if not token:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+
+    return wrap
+
+
 def latest_id():
     con, cursor = get_connection()
 
@@ -47,10 +59,8 @@ def latest_id():
 
 
 @app.route("/update_db", methods=[HTTP_METHOD_POST])
+@protect_route
 def add_new_tweets():
-    token = _get_token_from_cache(SCOPE)
-    if not token:
-        return redirect(url_for("login"))
     lastest_tweet = latest_id()
 
     # if there are no tweets in the db, prevent Nonetype subscription
@@ -102,10 +112,8 @@ def set_tweet_auth(auth, tweet_id):
 
 
 @app.route("/update_tweet_auth", methods=[HTTP_METHOD_POST])
+@protect_route
 def update_tweet_auth():
-    token = _get_token_from_cache(SCOPE)
-    if not token:
-        return redirect(url_for("login"))
     tweet_id = request.args.get("id")
     auth = request.args.get("auth")
 
@@ -118,10 +126,8 @@ def update_tweet_auth():
 
 
 @app.route("/panel")
+@protect_route
 def panel():
-    token = _get_token_from_cache(SCOPE)
-    if not token:
-        return redirect(url_for("login"))
     filter_type = request.args.get("filter")
     if not (filter_type in AUTH_TYPES.__members__.keys()):
         return redirect("/panel?filter=NEW")
@@ -176,6 +182,10 @@ def logout():
 
 @app.route("/login")
 def login():
+    token = _get_token_from_cache(SCOPE)
+    if token:
+        return redirect(url_for("panel"))
+
     session["flow"] = _build_auth_code_flow(scopes=SCOPE)
     return render_template("login.jinja", auth_url=session["flow"]["auth_uri"])
 

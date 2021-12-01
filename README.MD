@@ -12,6 +12,4 @@ This is a project that serves a moderated twitter timeline from a chosen hashtag
 
 ## TODO
 
--   turns out using `cursor.executemany()` is actually slower then chunking yourself, bring back old implementation
 -   set up working auth (just use a decorator for protected routes)
--   pagination for tweet fetching

@@ -26,10 +26,7 @@ def parse_response(search_response):
         return []
 
     authors = {
-        author["id"]: (
-            author["username"],
-            author["name"],
-        )
+        author["id"]: (author["username"], author["name"], author["profile_image_url"])
         for author in search_response["includes"]["users"]
     }
 

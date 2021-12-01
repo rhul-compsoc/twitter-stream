@@ -12,6 +12,7 @@ def main():
     	TWEET_TEXT                      VARCHAR(10),
     	TWEET_AUTHOR_USERNAME           VARCHAR(10),
     	TWEET_AUTHOR_NAME				VARCHAR(10),
+    	TWEET_AUTHOR_PF_LINK			VARCHAR(10),
     	TWEET_TIME                      INTEGER,
     	AUTHORIZED						INTEGER DEFAULT 0
     )"""
@@ -40,7 +41,7 @@ def main():
             )[-4:]
 
             execute_many(
-                "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?)",
                 dummy_tweets,
             )
 

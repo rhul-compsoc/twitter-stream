@@ -1,3 +1,4 @@
+from enum import Enum
 from dotenv import get_key
 
 
@@ -10,8 +11,14 @@ def fetch_from_env(key: str) -> str:
 
 # DATABASE
 DATABASE_FILE = "TWEETS.db"
-HASHTAG = "BlackFriday"
-SQL_SELECT_AUTH_TYPE = {"bad": "0", "good": "1", "new": "2"}
+HASHTAG = "hackawaytest2021"
+
+
+class AUTH_TYPES(Enum):
+    BAD = "0"
+    GOOD = "1"
+    NEW = "2"
+
 
 # TWITTER
 BEARER_TOKEN = fetch_from_env("BEARER_TOKEN")
@@ -24,6 +31,7 @@ SEARCH_QUERY = {
     "expansions": "author_id",
     # ISO 8601
     "tweet.fields": "created_at",
+    "user.fields": "profile_image_url,username",
     "max_results": 100,
 }
 # ISO 8601 strptime

@@ -1,11 +1,13 @@
+import json
+import os
 from flask import Flask, redirect, render_template, request, jsonify
 from constants import (
+    AUTH_TYPES,
     ENDPOINT_URL,
+    HASHTAG,
     HTTP_CODE_NOT_FOUND,
     HTTP_METHOD_POST,
-    MAX_BATCH,
     SEARCH_QUERY,
-    SQL_SELECT_AUTH_TYPE,
 )
 from utils import execute_many, gen_twitter_auth, get_connection, fetch, parse_response
 
@@ -39,35 +41,19 @@ def add_new_tweets():
 
     parsed_response = parse_response(search_result)
 
-    # at max we are adding 400 tweets at a time
-    while "next_token" in search_result["meta"] and len(parsed_response) < MAX_BATCH:
-        search_result = fetch(
-            ENDPOINT_URL,
-            params={
-                **SEARCH_QUERY,
-                **lastest_tweet_id,
-                "next_token": search_result["meta"]["next_token"],
-            },
-            auth=gen_twitter_auth,
-        )
-        temp_parsed = parse_response(search_result)
-        parsed_response.extend(temp_parsed)
-
-        print(search_result["meta"]["next_token"], len(parsed_response), len(temp_parsed))
-
     execute_many(
-        "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?)",
         parsed_response,
     )
 
     return redirect("/panel")
 
 
-def fetch_by_auth(authType: str):
+def fetch_by_auth(authType):
     con, cursor = get_connection()
 
     cursor.execute(
-        "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (authType,)
+        "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (authType.value,)
     )
 
     tweets = cursor.fetchall()
@@ -97,7 +83,7 @@ def update_tweet_auth():
     tweet_id = request.args.get("id")
     auth = request.args.get("auth")
 
-    validated = auth.isdecimal() and (0 <= int(auth) and int(auth) <= 1)
+    validated = auth.isdecimal() and abs(int(auth)) <= 3
 
     if validated:
         set_tweet_auth(int(auth), tweet_id)
@@ -108,24 +94,28 @@ def update_tweet_auth():
 @app.route("/panel")
 def panel():
     filter_type = request.args.get("filter")
-    if not (filter_type in SQL_SELECT_AUTH_TYPE):
-        return redirect("/panel?filter=new")
+    if not (filter_type in AUTH_TYPES.__members__.keys()):
+        return redirect("/panel?filter=NEW")
 
     return render_template(
         "panel.jinja",
-        tweets=fetch_by_auth(SQL_SELECT_AUTH_TYPE[filter_type]),
-        filter_type=filter_type,
+        tweets=fetch_by_auth(AUTH_TYPES[filter_type]),
+        filter_type=request.args.get("filter"),
     )
 
 
 @app.route("/good_tweets")
 def good_tweets():
-    return jsonify(fetch_by_auth(SQL_SELECT_AUTH_TYPE["good"]))
+    return jsonify(fetch_by_auth(AUTH_TYPES.GOOD))
 
 
 @app.route("/")
 def index():
-    return render_template("wall.jinja")
+    return render_template(
+        "wall.jinja",
+        hashtag=HASHTAG,
+        tweets=json.dumps(fetch_by_auth(AUTH_TYPES.GOOD)),
+    )
 
 
 @app.route("/login")
@@ -139,4 +129,6 @@ def page_not_found(e):
 
 
 if __name__ == "__main__":
+    if not os.path.isfile("./TWEETS.db"):
+        raise Exception("Initialise data base first pls")
     app.run(debug=True, host="0.0.0.0", port=8000)

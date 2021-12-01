@@ -1,68 +1,120 @@
-{% extends "base.jinja" %}
-<!-- prettier-ignore -->
-{% block title %}Twitter Wall{% endblock %}
-<!-- prettier-ignore -->
-{% block content %}
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="static/icon-512x512.png" rel="shortcut icon" type="image/x-icon" />
+		<title>Wall</title>
+		<style>
+			html {
+				background-color: #1d9bf0;
+			}
+			body {
+				height: 100%;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                overflow: hidden;
+			}
+			* {
+				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				color: white;
+			}
+			header {
+				display: flex;
+				align-items: center;
+				padding: 40px 150px;
+			}
+			header > img {
+				height: 7rem;
+			}
+			header > h1 {
+				margin-left: 50px;
+				font-size: 3em;
+			}
 
-<style>
-	@media only screen and (max-height: 100px) {
-		html {
-			background-color: lightblue;
-			overflow-y: hidden;
-		}
-		#tweets {
-			display: flex;
-			flex-direction: row-reverse;
-		}
-		.tweet > p {
-			max-width: 500px;
-			width: fit-content;
-		}
-	}
-</style>
+			#tweetContainer {
+				flex: 1;
+				margin: 50px;
+				background: white;
+				border-radius: 30px;
+				box-shadow: rgba(0, 0, 0, 0.26) 0px 12px 30px 4px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 80%;
+				flex-direction: column;
+				padding: 50px;
+				transition: opacity ease 2s;
+			}
 
-<div id="tweets"></div>
+			#tweetText {
+				font-size: 2.5em;
+				color: #1d9bf0;
+				margin-top: 39px;
+			}
 
-<script>
-	let latestId;
-	function createTweet({ TWEET_TEXT, TWEET_AUTHOR_USERNAME }) {
-		const tweetContainer = document.createElement('div');
-		tweetContainer.classList.add('tweet');
+			.author {
+				display: flex;
+				align-items: center;
+			}
+			.author > p {
+				font-size: 2rem;
+				color: #1d9bf0;
+				margin: 0 0 0 20px;
+			}
+			.author > img {
+				border-radius: 50%;
+				height: 75px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<img src="/static/twitter-icon.svg" alt="twitter logo" />
+			<h1>Tweet at us using: #{{ hashtag }}</h1>
+		</header>
+		<div id="tweetContainer">
+			<div class="author">
+				<img style="vertical-align: middle" id="pfPicUrl"  srcset ="" src="" />
+				<p id="userName"></p>
+			</div>
+			<p id="tweetText"></p>
+		</div>
+	</body>
 
-		const tweetText = document.createElement('p');
-		tweetText.innerText = TWEET_TEXT;
+	<script>
+		let currentTweet = 0;
+        const setNewTweet = ({ TWEET_AUTHOR_PF_LINK, TWEET_TEXT, TWEET_AUTHOR_USERNAME }) => {
+            // links that twitter gives us will be in the form _normal.ext. the regex will remove the _normal
+            document
+                .getElementById('pfPicUrl')
+                .setAttribute('src', TWEET_AUTHOR_PF_LINK.replace(/(_[^_]+)(\.\w+$)/, '$2'));
+            
+            // if the image url does not work, switch to previous one
+            document
+                .getElementById('pfPicUrl')
+                .setAttribute('onerror', `this.onerror=null;this.src="${TWEET_AUTHOR_PF_LINK}"`);
 
-		const tweetAuthor = document.createElement('p');
-		tweetAuthor.innerText = TWEET_AUTHOR_USERNAME;
+            document.getElementById('userName').innerText = TWEET_AUTHOR_USERNAME;
+            document.getElementById('tweetText').innerText = TWEET_TEXT;
+            currentTweet = (currentTweet + 1) % tweets.length;
+        };
 
-		tweetContainer.appendChild(tweetAuthor);
-		tweetContainer.appendChild(tweetText);
+        tweets = {{tweets|safe}}
+        setNewTweet(tweets[currentTweet]);
 
-		return tweetContainer;
-	}
+        setInterval(async function reset() {
+            tweets = await (await fetch('/good_tweets')).json()
 
-	const tweetWrapper = document.getElementById('tweets');
-	function addTweets(data) {
-		data.forEach((tweet) => {
-			tweetWrapper.appendChild(createTweet(tweet));
-		});
-	}
-
-	function fetch_tweets() {
-		fetch('/good_tweets')
-			.then((res) => res.json())
-			.then((jsonResponse) => {
-				latestId = jsonResponse[0].TWEET_TIME;
-				addTweets(jsonResponse);
-			});
-	}
-
-	fetch_tweets();
-
-	setInterval(() => {
-		console.log('fetching');
-		fetch_tweets();
-	}, 30000);
-</script>
-
-{% endblock %}
+            if (tweets.length > 1) {
+                document.getElementById('tweetContainer').style.opacity = 0;
+                setTimeout(() => {
+                    setNewTweet(tweets[currentTweet]);
+                    document.getElementById('tweetContainer').style.opacity = 1;
+                }, 2000);
+            }
+        }, 30000);
+	</script>
+</html>

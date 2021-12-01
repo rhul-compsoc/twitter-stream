@@ -17,7 +17,6 @@ from constants import (
     TENANT_ID,
 )
 from msal_utils import (
-    _build_auth_code_flow,
     _build_msal_app,
     _get_token_from_cache,
     _load_cache,
@@ -186,7 +185,10 @@ def login():
     if token:
         return redirect(url_for("panel"))
 
-    session["flow"] = _build_auth_code_flow(scopes=SCOPE)
+    session["flow"] = _build_msal_app().initiate_auth_code_flow(
+        SCOPE, redirect_uri=url_for("authorized", _external=True)
+    )
+
     return render_template("login.jinja", auth_url=session["flow"]["auth_uri"])
 
 

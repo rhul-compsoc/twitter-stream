@@ -1,4 +1,4 @@
-from flask import session, url_for
+from flask import session
 import msal
 
 from constants import CLIENT_ID, CLIENT_SECRET, TENANT_ID
@@ -16,18 +16,12 @@ def _save_cache(cache):
         session["token_cache"] = cache.serialize()
 
 
-def _build_msal_app(cache=None, authority=None):
+def _build_msal_app(cache=None):
     return msal.ConfidentialClientApplication(
         CLIENT_ID,
-        authority=authority or f"https://login.microsoftonline.com/{TENANT_ID}",
+        authority=f"https://login.microsoftonline.com/{TENANT_ID}",
         client_credential=CLIENT_SECRET,
         token_cache=cache,
-    )
-
-
-def _build_auth_code_flow(authority=None, scopes=None):
-    return _build_msal_app(authority=authority).initiate_auth_code_flow(
-        scopes or [], redirect_uri=url_for("authorized", _external=True)
     )
 
 

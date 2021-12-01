@@ -3,7 +3,7 @@ from dotenv import get_key
 
 
 def fetch_from_env(key: str) -> str:
-    env_key = get_key(".env.development", key)
+    env_key = get_key(".env", key)
     if env_key == None:
         raise KeyError(f"{key} not found!")
     return env_key
@@ -37,7 +37,12 @@ SEARCH_QUERY = {
 # ISO 8601 strptime
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%f%z"
 
-
+# Office contants
+CLIENT_ID = fetch_from_env("OFFICE_365_CLIENT_ID")
+CLIENT_SECRET = fetch_from_env("OFFICE_365_CLIENT_SECRET")
+TENANT_ID = fetch_from_env("OFFICE_365_TENANT_ID")
+SCOPE = ["User.ReadBasic.All"]
+REDIRECT_PATH = "/redirect"
 # HTTP STATUS CODES
 HTTP_CODE_NOT_FOUND = 404
 HTTP_CODE_BAD_AUTH = 401

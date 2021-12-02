@@ -11,7 +11,7 @@ def fetch_from_env(key: str) -> str:
 
 # DATABASE
 DATABASE_FILE = "TWEETS.db"
-HASHTAG = "hackawaytest2021"
+HASHTAG = "80s90s00s"
 
 
 class AUTH_TYPES(Enum):

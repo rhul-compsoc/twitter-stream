@@ -18,12 +18,11 @@
 				background-color: #1d9bf0;
 			}
 			body {
-				height: 100%;
+				max-height: 100vh;
 				margin: 0;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				overflow: hidden;
 			}
 			* {
 				font-family: 'Comic Neue', cursive;
@@ -61,6 +60,9 @@
 				font-size: 2.5em;
 				color: #1d9bf0;
 				margin-top: 39px;
+				max-height: 40vh;
+				overflow: hidden;
+				text-overflow: ellipsis;
 			}
 
 			.author {
@@ -110,7 +112,7 @@
 		              .setAttribute('onerror', `this.onerror=null;this.src="${TWEET_AUTHOR_PF_LINK}"`);
 
 		          document.getElementById('userName').innerText = TWEET_AUTHOR_USERNAME;
-		          document.getElementById('tweetText').innerText = TWEET_TEXT;
+		          document.getElementById('tweetText').innerText = TWEET_TEXT.replaceAll(/\n+/g,'\n');
 		          currentTweet = (currentTweet + 1) % tweets.length;
 		      };
 

@@ -9,6 +9,7 @@ from constants import (
     AUTH_TYPES,
     ENDPOINT_URL,
     HASHTAG,
+    HTTP_CODE_BAD_AUTH,
     HTTP_CODE_NOT_FOUND,
     HTTP_METHOD_POST,
     REDIRECT_PATH,
@@ -41,7 +42,7 @@ def protect_route(f):
     def wrap(*args, **kwargs):
         token = _get_token_from_cache(SCOPE)
         if not token:
-            return redirect(url_for("login"))
+            return login(code=HTTP_CODE_BAD_AUTH)
         return f(*args, **kwargs)
 
     return wrap
@@ -180,13 +181,13 @@ def logout():
 
 
 @app.route("/login")
-def login():
+def login(code=HTTP_CODE_SUCCESS):
     token = _get_token_from_cache(SCOPE)
     if token:
         return redirect(url_for("panel"))
 
     session["flow"] = _build_msal_app().initiate_auth_code_flow(
-        SCOPE, redirect_uri=url_for("authorized", _external=True)
+        SCOPE, redirect_uri=url_for("authorized", _external=True, code=code)
     )
 
     return render_template("login.jinja", auth_url=session["flow"]["auth_uri"])

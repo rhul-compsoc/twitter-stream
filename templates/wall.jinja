@@ -3,7 +3,15 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="static/icon-512x512.png" rel="shortcut icon" type="image/x-icon" />
+		<link
+			href="static/icon-512x512.png"
+			rel="shortcut icon"
+			type="image/x-icon" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+			rel="stylesheet" />
 		<title>Wall</title>
 		<style>
 			html {
@@ -11,14 +19,14 @@
 			}
 			body {
 				height: 100%;
-                margin: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                overflow: hidden;
+				margin: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				overflow: hidden;
 			}
 			* {
-				font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+				font-family: 'Comic Neue', cursive;
 				color: white;
 			}
 			header {
@@ -77,7 +85,11 @@
 		</header>
 		<div id="tweetContainer">
 			<div class="author">
-				<img style="vertical-align: middle" id="pfPicUrl"  srcset ="" src="" />
+				<img
+					style="vertical-align: middle"
+					id="pfPicUrl"
+					srcset=""
+					src="" />
 				<p id="userName"></p>
 			</div>
 			<p id="tweetText"></p>
@@ -86,35 +98,35 @@
 
 	<script>
 		let currentTweet = 0;
-        const setNewTweet = ({ TWEET_AUTHOR_PF_LINK, TWEET_TEXT, TWEET_AUTHOR_USERNAME }) => {
-            // links that twitter gives us will be in the form _normal.ext. the regex will remove the _normal
-            document
-                .getElementById('pfPicUrl')
-                .setAttribute('src', TWEET_AUTHOR_PF_LINK.replace(/(_[^_]+)(\.\w+$)/, '$2'));
-            
-            // if the image url does not work, switch to previous one
-            document
-                .getElementById('pfPicUrl')
-                .setAttribute('onerror', `this.onerror=null;this.src="${TWEET_AUTHOR_PF_LINK}"`);
+		      const setNewTweet = ({ TWEET_AUTHOR_PF_LINK, TWEET_TEXT, TWEET_AUTHOR_USERNAME }) => {
+		          // links that twitter gives us will be in the form _normal.ext. the regex will remove the _normal
+		          document
+		              .getElementById('pfPicUrl')
+		              .setAttribute('src', TWEET_AUTHOR_PF_LINK.replace(/(_[^_]+)(\.\w+$)/, '$2'));
 
-            document.getElementById('userName').innerText = TWEET_AUTHOR_USERNAME;
-            document.getElementById('tweetText').innerText = TWEET_TEXT;
-            currentTweet = (currentTweet + 1) % tweets.length;
-        };
+		          // if the image url does not work, switch to previous one
+		          document
+		              .getElementById('pfPicUrl')
+		              .setAttribute('onerror', `this.onerror=null;this.src="${TWEET_AUTHOR_PF_LINK}"`);
 
-        tweets = {{tweets|safe}}
-        setNewTweet(tweets[currentTweet]);
+		          document.getElementById('userName').innerText = TWEET_AUTHOR_USERNAME;
+		          document.getElementById('tweetText').innerText = TWEET_TEXT;
+		          currentTweet = (currentTweet + 1) % tweets.length;
+		      };
 
-        setInterval(async function reset() {
-            tweets = await (await fetch('/good_tweets')).json()
+		      tweets = {{tweets|safe}}
+		      setNewTweet(tweets[currentTweet]);
 
-            if (tweets.length > 1) {
-                document.getElementById('tweetContainer').style.opacity = 0;
-                setTimeout(() => {
-                    setNewTweet(tweets[currentTweet]);
-                    document.getElementById('tweetContainer').style.opacity = 1;
-                }, 2000);
-            }
-        }, 30000);
+		      setInterval(async function reset() {
+		          tweets = await (await fetch('/good_tweets')).json()
+
+		          if (tweets.length > 1) {
+		              document.getElementById('tweetContainer').style.opacity = 0;
+		              setTimeout(() => {
+		                  setNewTweet(tweets[currentTweet]);
+		                  document.getElementById('tweetContainer').style.opacity = 1;
+		              }, 2000);
+		          }
+		      }, 30000);
 	</script>
 </html>

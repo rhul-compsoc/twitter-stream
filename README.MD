@@ -11,3 +11,5 @@ This is a project that serves a moderated twitter timeline from a chosen hashtag
 -   Start the server with `python3 app.py`
 
 ## TODO
+
+- figure out how tf it broke 

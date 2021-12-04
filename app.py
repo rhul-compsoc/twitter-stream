@@ -4,6 +4,9 @@ import os
 
 from flask import Flask, redirect, render_template, request, jsonify, session, url_for
 from flask_session import Session
+from time import sleep
+from threading import Thread
+from traceback import print_last
 
 from constants import (
     AUTH_TYPES,
@@ -197,7 +200,21 @@ def page_not_found(e):
     return "<h1>404</h1>", HTTP_CODE_NOT_FOUND
 
 
+def refresh_database_thread():
+    while 1:
+        try:
+            print("Updating the tweet database.")
+            add_new_tweets()
+        except Exception as e:
+            print_last()
+        sleep(10)
+
+
 if __name__ == "__main__":
     if not os.path.isfile("./TWEETS.db"):
         raise Exception("Initialise data base first pls")
     app.run(debug=True, host="0.0.0.0", port=5000)
+    
+    # Start the database updater thread
+    t = Thread(target=refresh_database_thread, args=())
+    t.start() 

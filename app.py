@@ -1,6 +1,7 @@
 from functools import wraps
 import json
 import os
+import sqlite3
 
 from flask import Flask, redirect, render_template, request, jsonify, session, url_for
 from flask_session import Session
@@ -51,11 +52,17 @@ def protect_route(f):
 
 
 def latest_id():
-    con, cursor = get_connection()
+    lastest_tweet = ""
+    try:
+        con, cursor = get_connection()
 
-    cursor.execute("SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
-    lastest_tweet = cursor.fetchone()
-    con.close()
+        cursor.execute("SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
+        lastest_tweet = cursor.fetchone()
+    
+    except sqlite3.Error as err:
+        print("Error connecting to database", err)
+    finally:
+        con.close()
 
     return lastest_tweet
 
@@ -63,54 +70,67 @@ def latest_id():
 @app.route("/update_db", methods=[HTTP_METHOD_POST])
 @protect_route
 def add_new_tweets():
-    lastest_tweet = latest_id()
+    try:
+        lastest_tweet = latest_id()
 
-    # if there are no tweets in the db, prevent Nonetype subscription
-    lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
+        # if there are no tweets in the db, prevent Nonetype subscription
+        lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
 
-    search_result = fetch(
-        ENDPOINT_URL,
-        params={**SEARCH_QUERY, **lastest_tweet_id},
-        auth=gen_twitter_auth,
-    )
+        search_result = fetch(
+            ENDPOINT_URL,
+            params={**SEARCH_QUERY, **lastest_tweet_id},
+            auth=gen_twitter_auth,
+        )
 
-    parsed_response = parse_response(search_result)
+        parsed_response = parse_response(search_result)
 
-    execute_many(
-        "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?)",
-        parsed_response,
-    )
+        execute_many(
+            "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?)",
+            parsed_response,
+        )
+    except sqlite3.Error as err:
+        print("Error connecting to database", err)        
+    finally:
+        con.close()
 
     return redirect(url_for("panel"))
 
 
 def fetch_by_auth(authType):
-    con, cursor = get_connection()
+    tweets = ""
+    try:
+        con, cursor = get_connection()
 
-    cursor.execute(
-        "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (authType.value,)
-    )
+        cursor.execute(
+            "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (authType.value,)
+        )
 
-    tweets = cursor.fetchall()
-
-    con.close()
+        tweets = cursor.fetchall()
+    except sqlite3.Error as err:
+        print("Error connecting to database", err)        
+    finally:
+        con.close()
 
     return tweets
 
 
 def set_tweet_auth(auth, tweet_id):
-    con, cursor = get_connection()
+    try:
+        con, cursor = get_connection()
 
-    cursor.execute(
-        "UPDATE tweets SET AUTHORIZED = ? WHERE TWEET_ID = ?",
-        (
-            auth,
-            tweet_id,
-        ),
-    )
+        cursor.execute(
+            "UPDATE tweets SET AUTHORIZED = ? WHERE TWEET_ID = ?",
+            (
+                auth,
+                tweet_id,
+            ),
+        )
 
-    con.commit()
-    con.close()
+        con.commit()
+    except sqlite3.Error as err:
+        print("Error connecting to database", err)        
+    finally:
+        con.close()
 
 
 @app.route("/update_tweet_auth", methods=[HTTP_METHOD_POST])

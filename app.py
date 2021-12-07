@@ -71,6 +71,7 @@ def latest_id():
 @protect_route
 def add_new_tweets():
     try:
+        con, cursor = get_connection()
         lastest_tweet = latest_id()
 
         # if there are no tweets in the db, prevent Nonetype subscription

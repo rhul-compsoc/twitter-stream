@@ -1,5 +1,6 @@
 import sqlite3
 import requests
+import traceback
 from constants import BEARER_TOKEN, DATABASE_FILE, TIME_FORMAT
 from datetime import datetime
 
@@ -72,6 +73,9 @@ def print_all():
 def execute_many(statement: str, data: tuple[any]):
     con, cur = get_connection()
     for row in data:
-        cur.execute(statement, row)
+        try:
+            cur.execute(statement, row)
+        except:
+            traceback.print_exc()
     con.commit()
     con.close()

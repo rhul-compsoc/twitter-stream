@@ -79,9 +79,22 @@
 				border-radius: 50%;
 				height: 75px;
 			}
+			#credit {
+				position: fixed;
+				top: 10px;
+				left: 15px;
+				display: flex;
+				align-items: center;
+			}
+			#compsoc {
+				height: 35px;
+			}
 		</style>
 	</head>
 	<body>
+		<div id="credit">
+			<img src="/static/compsoc_no_padding_dark.png" id="compsoc" />
+		</div>
 		<header>
 			<img src="/static/twitter-icon.svg" alt="twitter logo" />
 			<h1>Tweet at us using: #{{ hashtag }}</h1>

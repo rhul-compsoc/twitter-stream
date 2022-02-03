@@ -13,7 +13,6 @@ def fetch_from_env(key: str) -> str:
 DATABASE_FILE = "TWEETS.db"
 HASHTAG = "80s90s00s"
 
-
 class AUTH_TYPES(Enum):
     BAD = "0"
     GOOD = "1"
@@ -24,11 +23,13 @@ class AUTH_TYPES(Enum):
 BEARER_TOKEN = fetch_from_env("BEARER_TOKEN")
 # https://developer.twitter.com/en/docs/twitter-api/tweets/search/introduction
 ENDPOINT_URL = "https://api.twitter.com/2/tweets/search/recent"
+# https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-statuses-lookup
+VIDEO_ENDPOINT_URL = "https://api.twitter.com/1.1/statuses/lookup.json"
 MAX_BATCH = 400
 # @TODO: exclude any tweet with url/pictures
 SEARCH_QUERY = {
     "query": f"#{HASHTAG}",
-    "expansions": "author_id",
+    "expansions": "author_id,attachments.media_keys",
     # ISO 8601
     "tweet.fields": "created_at",
     "user.fields": "profile_image_url,username",

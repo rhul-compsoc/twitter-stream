@@ -1,7 +1,7 @@
 import sqlite3
 import requests
 import traceback
-from constants import BEARER_TOKEN, DATABASE_FILE, TIME_FORMAT
+from constants import BEARER_TOKEN, DATABASE_FILE, TIME_FORMAT, VIDEO_ENDPOINT_URL
 from datetime import datetime
 
 
@@ -80,3 +80,19 @@ def execute_many(statement: str, data):
             traceback.print_exc()
     con.commit()
     con.close()
+
+# pass a list of tweet IDs with gifs and it'll return the IDs and the gif URLs [{id, url}...]
+def getGifURLs(tweet_ids: list):
+    params = {
+        id: ','.join(tweet_ids)
+    }
+    response = fetch(VIDEO_ENDPOINT_URL, params)
+    out = []
+    for x in response:
+        try:
+            # it's long and it might fail, but it will fail nicely
+            vidUrl = x.extended_entities.media[0].video_info.variants[0].url
+            out.push({"id": x.id, "url": vidUrl })
+        except:
+            print("I couldn't get a gif for a tweet that was supposed to have one :(")
+    return out

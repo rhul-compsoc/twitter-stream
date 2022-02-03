@@ -31,7 +31,8 @@ def main():
     rows = cur.fetchall()
 
     if len(rows) == 0:
-        create_dummy_values = input("Table empty, create dummy values? (y/n): ")
+        create_dummy_values = input(
+            "Table empty, create dummy values? (y/n): ")
 
         if create_dummy_values == "y" or create_dummy_values == "yes":
             print("Creating dummy values in database...")

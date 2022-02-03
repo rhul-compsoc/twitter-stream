@@ -1,3 +1,4 @@
+from werkzeug.middleware.proxy_fix import ProxyFix
 from functools import wraps
 import json
 import os
@@ -38,7 +39,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 Session(app)
 
-from werkzeug.middleware.proxy_fix import ProxyFix
 
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
@@ -62,7 +62,8 @@ def latest_id():
     try:
         con, cursor = get_connection()
 
-        cursor.execute("SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
+        cursor.execute(
+            "SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
         lastest_tweet = cursor.fetchone()
 
     except sqlite3.Error as err:
@@ -81,7 +82,8 @@ def add_new_tweets():
         lastest_tweet = latest_id()
 
         # if there are no tweets in the db, prevent Nonetype subscription
-        lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
+        lastest_tweet_id = {} if not lastest_tweet else {
+            "since_id": lastest_tweet["TWEET_ID"]}
 
         search_result = fetch(
             ENDPOINT_URL,
@@ -109,7 +111,8 @@ def fetch_by_auth(authType):
         con, cursor = get_connection()
 
         cursor.execute(
-            "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (authType.value,)
+            "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (
+                authType.value,)
         )
 
         tweets = cursor.fetchall()
@@ -182,7 +185,8 @@ def index():
     )
 
 
-@app.route(REDIRECT_PATH)  # Its absolute URL must match your app's redirect_uri set in AAD
+# Its absolute URL must match your app's redirect_uri set in AAD
+@app.route(REDIRECT_PATH)
 def authorized():
     try:
         cache = _load_cache()

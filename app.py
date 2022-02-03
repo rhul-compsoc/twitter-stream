@@ -20,6 +20,7 @@ from constants import (
     SCOPE,
     SEARCH_QUERY,
     TENANT_ID,
+    BYPASS_AUTHENTICATION,
 )
 from msal_utils import (
     _build_msal_app,
@@ -45,6 +46,9 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 def protect_route(f):
     @wraps(f)
     def wrap(*args, **kwargs):
+        if BYPASS_AUTHENTICATION:
+            return f(*args, **kwargs)
+
         token = _get_token_from_cache(SCOPE)
         if not token:
             return redirect(url_for("login"))
@@ -207,6 +211,9 @@ def logout():
 
 @app.route("/login")
 def login():
+    if BYPASS_AUTHENTICATION:
+        return redirect(url_for("panel"))
+
     token = _get_token_from_cache(SCOPE)
     if token:
         return redirect(url_for("panel"))

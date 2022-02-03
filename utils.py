@@ -70,7 +70,7 @@ def print_all():
     con.close()
 
 
-def execute_many(statement: str, data: tuple[any]):
+def execute_many(statement: str, data):
     con, cur = get_connection()
     for row in data:
         try:

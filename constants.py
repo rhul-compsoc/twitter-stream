@@ -43,6 +43,10 @@ CLIENT_SECRET = fetch_from_env("OFFICE_365_CLIENT_SECRET")
 TENANT_ID = fetch_from_env("OFFICE_365_TENANT_ID")
 SCOPE = ["User.ReadBasic.All"]
 REDIRECT_PATH = "/redirect"
+
+# Bypass Authentication (for testing purposes)
+BYPASS_AUTHENTICATION = True if fetch_from_env("BYPASS_AUTHENTICATION") == "True" else False
+
 # HTTP STATUS CODES
 HTTP_CODE_NOT_FOUND = 404
 HTTP_CODE_BAD_AUTH = 401

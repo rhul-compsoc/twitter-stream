@@ -46,7 +46,7 @@ def parse_response(search_response):
             tweet["text"].rsplit('https://t.co/', 1)[0], # rsplit to remove the t.co link from displaying
             *authors[tweet["author_id"]],
             created_at_convert(tweet["created_at"]),
-            gifs[tweet["attachments"]["media_keys"][0]] if ("attachments" in tweet and "media_keys" in tweet["attachments"]) else False,
+            *(gifs[tweet["attachments"]["media_keys"][0]] if ("attachments" in tweet and "media_keys" in tweet["attachments"]) else {False}),
             2,
         )
         for tweet in search_response["data"]

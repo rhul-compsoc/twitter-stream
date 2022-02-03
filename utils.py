@@ -32,12 +32,21 @@ def parse_response(search_response):
         for author in search_response["includes"]["users"]
     }
 
+    # TODO: Add finding whether or not the tweet had a gif in it
+    gifs = {
+        gif["media_key"]: {
+            gif["type"] == "animated_gif"
+        }
+        for gif in search_response["includes"]["media"]
+    }
+
     return [
         (
             tweet["id"],
-            tweet["text"],
+            tweet["text"].rsplit('https://t.co/', 1)[0], # rsplit to remove the t.co link from displaying
             *authors[tweet["author_id"]],
             created_at_convert(tweet["created_at"]),
+            gifs[tweet["attachments"]["media_keys"][0]] if ("attachments" in tweet and "media_keys" in tweet["attachments"]) else False,
             2,
         )
         for tweet in search_response["data"]
@@ -80,6 +89,7 @@ def execute_many(statement: str, data):
             traceback.print_exc()
     con.commit()
     con.close()
+
 
 # pass a list of tweet IDs with gifs and it'll return the IDs and the gif URLs [{id, url}...]
 def getGifURLs(tweet_ids: list):

@@ -33,6 +33,7 @@ SEARCH_QUERY = {
     # ISO 8601
     "tweet.fields": "created_at",
     "user.fields": "profile_image_url,username",
+    "media.fields": "type",
     "max_results": 100,
 }
 # ISO 8601 strptime

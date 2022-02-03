@@ -94,7 +94,7 @@ def add_new_tweets():
         parsed_response = parse_response(search_result)
 
         execute_many(
-            "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             parsed_response,
         )
     except sqlite3.Error as err:
@@ -104,6 +104,19 @@ def add_new_tweets():
 
     return redirect(url_for("panel"))
 
+def manageGifURLs():
+    sql = "SELECT TWEET_ID FROM tweets WHERE HAS_GIF = TRUE AND GIF_URL = NULL"
+    
+    try:
+        cursor = get_connection()
+        cursor.execute(sql)
+        lastest_tweet = cursor.fetchall()
+        
+
+    except sqlite3.Error as err:
+        print("Error connecting to database", err)
+    finally:
+        cursor.close()
 
 def fetch_by_auth(authType):
     tweets = ""

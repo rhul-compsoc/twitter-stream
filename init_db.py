@@ -6,14 +6,18 @@ def main():
     con, cur = get_connection()
     print('Opened database successfully in file "{}"'.format(DATABASE_FILE))
 
+    # Tweet ID has to be a varchar, it's too big to be an int!
     con.execute(
         """CREATE TABLE IF NOT EXISTS tweets (
-    	TWEET_ID                        INTEGER NOT NULL PRIMARY KEY,
+    	TWEET_ID                        VARCHAR(20) NOT NULL PRIMARY KEY,
     	TWEET_TEXT                      VARCHAR(10),
     	TWEET_AUTHOR_USERNAME           VARCHAR(10),
     	TWEET_AUTHOR_NAME				VARCHAR(10),
     	TWEET_AUTHOR_PF_LINK			VARCHAR(10),
     	TWEET_TIME                      INTEGER,
+        HAS_GIF                         BOOLEAN DEFAULT FALSE,
+        GIF_URL                         VARCHAR(55) DEFAULT NULL,
+        GIF_NAME                        VARCHAR(19) DEFAULT NULL,
     	AUTHORIZED						INTEGER DEFAULT 0
     )"""
     )
@@ -40,9 +44,19 @@ def main():
             dummy_tweets = parse_response(
                 fetch(ENDPOINT_URL, params=SEARCH_QUERY, auth=gen_twitter_auth)
             )[-4:]
-
+            print(dummy_tweets)
             execute_many(
-                "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?)",
+                """INSERT INTO tweets (
+                    TWEET_ID,
+                    TWEET_TEXT,
+                    TWEET_AUTHOR_USERNAME,
+                    TWEET_AUTHOR_NAME,
+                    TWEET_AUTHOR_PF_LINK,
+                    TWEET_TIME, 
+                    HAS_GIF,
+                    AUTHORIZED
+                ) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
                 dummy_tweets,
             )
 

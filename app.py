@@ -4,6 +4,7 @@ import os
 import sqlite3
 
 from flask import Flask, redirect, render_template, request, jsonify, session, url_for
+from flask_cors import CORS
 from flask_session import Session
 from time import sleep
 from threading import Thread
@@ -29,6 +30,7 @@ from msal_utils import (
 from utils import execute_many, gen_twitter_auth, get_connection, fetch, parse_response
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.config["JSON_SORT_KEYS"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -58,7 +60,7 @@ def latest_id():
 
         cursor.execute("SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
         lastest_tweet = cursor.fetchone()
-    
+
     except sqlite3.Error as err:
         print("Error connecting to database", err)
     finally:
@@ -90,7 +92,7 @@ def add_new_tweets():
             parsed_response,
         )
     except sqlite3.Error as err:
-        print("Error connecting to database", err)        
+        print("Error connecting to database", err)
     finally:
         con.close()
 
@@ -108,7 +110,7 @@ def fetch_by_auth(authType):
 
         tweets = cursor.fetchall()
     except sqlite3.Error as err:
-        print("Error connecting to database", err)        
+        print("Error connecting to database", err)
     finally:
         con.close()
 
@@ -129,7 +131,7 @@ def set_tweet_auth(auth, tweet_id):
 
         con.commit()
     except sqlite3.Error as err:
-        print("Error connecting to database", err)        
+        print("Error connecting to database", err)
     finally:
         con.close()
 
@@ -231,11 +233,38 @@ def refresh_database_thread():
         sleep(10)
 
 
+@app.route("/api/since_id")
+def since_id():
+    # hashtag to search
+    hashtag = request.args.get("hash")
+    print(hashtag)
+    if not hashtag:
+        return "hashtag was not included. bad request", 400
+    # id to limit recent tweets to
+    tweet_id = request.args.get("id")
+
+    return jsonify(
+        fetch(
+            ENDPOINT_URL,
+            params={
+                "query": f"#{hashtag}",
+                "expansions": "author_id",
+                # ISO 8601
+                "tweet.fields": "created_at",
+                "user.fields": "profile_image_url,username",
+                "max_results": 100,
+                **(tweet_id or {}),
+            },
+            auth=gen_twitter_auth,
+        )
+    )
+
+
 if __name__ == "__main__":
     if not os.path.isfile("./TWEETS.db"):
         raise Exception("Initialise data base first pls")
     app.run(debug=True, host="0.0.0.0", port=5000)
-    
+
     # Start the database updater thread
     t = Thread(target=refresh_database_thread, args=())
-    t.start() 
+    t.start()

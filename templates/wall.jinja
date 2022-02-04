@@ -68,8 +68,16 @@
 
 			#gifContainer {
 				color: black;
+				width: 100%;
+				max-width: 45vmin;
+				max-height: 70vmin;
 			}
 
+			#gifContainer video {
+				width: 100%;
+				
+				margin: auto;
+			}
 			.author {
 				display: flex;
 				align-items: center;
@@ -113,10 +121,9 @@
 				<p id="userName"></p>
 			</div>
 			<p id="tweetText"></p>
-			<div id="gifContainer">
-
-			</div>
+			<div id="gifContainer"></div>
 		</div>
+		
 	</body>
 
 	<script>
@@ -133,7 +140,22 @@
 		              .setAttribute('onerror', `this.onerror=null;this.src="${TWEET_AUTHOR_PF_LINK}"`);
 
 		          document.getElementById('userName').innerText = TWEET_AUTHOR_USERNAME;
-							document.getElementById('gifContainer').innerText = `${HAS_GIF ? "This tweet has a gif!" : "This tweet has no gif!"} Gif URL: ${GIF_URL}`;
+							if(HAS_GIF){
+								let container = document.getElementById('gifContainer');
+								container.innerHTML = '';
+								let vidElement = document.createElement('video');
+								let sourceElement = document.createElement('source');
+								vidElement.setAttribute('loop', '');
+								vidElement.setAttribute('autoplay', '');
+								vidElement.setAttribute('muted', '');
+								sourceElement.setAttribute('src', GIF_URL);
+								sourceElement.setAttribute('type', 'video/mp4');
+								vidElement.appendChild(sourceElement);
+								container.appendChild(vidElement);
+								vidElement.play();
+								//container.innerText = `${HAS_GIF ? "This tweet has a gif!" : "This tweet has no gif!"} Gif URL: ${GIF_URL}`;
+							}
+							
 		          document.getElementById('tweetText').innerText = TWEET_TEXT.replaceAll(/\n+/g,'\n');
 		          currentTweet = (currentTweet + 1) % tweets.length;
 		      };
@@ -150,9 +172,9 @@
 											currentTweet = currentTweet % tweets.length;
 		                  setNewTweet(tweets[currentTweet]);
 		                  document.getElementById('tweetContainer').style.opacity = 1;
-		              }, 2000);
+		              }, 500);
 									// 😡😡😡😡😡 css fading is a thing grr
 		          }
-		      }, 30000);
+		      }, 3000);
 	</script>
 </html>

@@ -43,7 +43,7 @@ def parse_response(search_response):
     return [
         (
             tweet["id"],
-            tweet["text"].rsplit('https://t.co/', 1)[0], # rsplit to remove the t.co link from displaying
+            tweet["text"].rsplit('https://t.co/', 1)[0].strip(), # rsplit to remove the t.co link from displaying
             *authors[tweet["author_id"]],
             created_at_convert(tweet["created_at"]),
             *(gifs[tweet["attachments"]["media_keys"][0]] if ("attachments" in tweet and "media_keys" in tweet["attachments"]) else {False}),
@@ -91,18 +91,21 @@ def execute_many(statement: str, data):
     con.close()
 
 
-# pass a list of tweet IDs with gifs and it'll return the IDs and the gif URLs [{id, url}...]
+# pass a list of tweet IDs with gifs and it'll return the IDs and the gif URLs [[url, id]...]
 def getGifURLs(tweet_ids: list):
     params = {
-        id: ','.join(tweet_ids)
+        "id": ','.join(tweet_ids)
     }
-    response = fetch(VIDEO_ENDPOINT_URL, params)
+    #response = fetch(VIDEO_ENDPOINT_URL, params, auth=gen_twitter_auth)
+    response = requests.get(VIDEO_ENDPOINT_URL, params, auth=gen_twitter_auth).json()
     out = []
+    print(response[0]["extended_entities"]["media"][0]["video_info"]["variants"][0]["url"])
     for x in response:
         try:
             # it's long and it might fail, but it will fail nicely
-            vidUrl = x.extended_entities.media[0].video_info.variants[0].url
-            out.push({"id": x.id, "url": vidUrl })
+            vidUrl = x["extended_entities"]["media"][0]["video_info"]["variants"][0]["url"]
+            out.append([vidUrl, x["id"]])
+            
         except:
             print("I couldn't get a gif for a tweet that was supposed to have one :(")
     return out

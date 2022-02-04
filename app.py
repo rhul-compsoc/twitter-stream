@@ -29,7 +29,7 @@ from msal_utils import (
     _load_cache,
     _save_cache,
 )
-from utils import execute_many, gen_twitter_auth, get_connection, fetch, parse_response
+from utils import execute_many, gen_twitter_auth, get_connection, fetch, parse_response, getGifURLs
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -94,29 +94,48 @@ def add_new_tweets():
         parsed_response = parse_response(search_result)
 
         execute_many(
-            "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            """INSERT INTO tweets (
+                    TWEET_ID,
+                    TWEET_TEXT,
+                    TWEET_AUTHOR_USERNAME,
+                    TWEET_AUTHOR_NAME,
+                    TWEET_AUTHOR_PF_LINK,
+                    TWEET_TIME, 
+                    HAS_GIF,
+                    AUTHORIZED
+                ) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
             parsed_response,
         )
     except sqlite3.Error as err:
         print("Error connecting to database", err)
     finally:
         con.close()
-
+        manageGifURLs()
+    
     return redirect(url_for("panel"))
 
 def manageGifURLs():
-    sql = "SELECT TWEET_ID FROM tweets WHERE HAS_GIF = TRUE AND GIF_URL = NULL"
+    sql = "SELECT TWEET_ID FROM tweets WHERE HAS_GIF = TRUE AND GIF_URL IS NULL"
     
     try:
-        cursor = get_connection()
+        con, cursor = get_connection()
         cursor.execute(sql)
-        lastest_tweet = cursor.fetchall()
-        
-
+        noUrlTweets = cursor.fetchall()
+        if len(noUrlTweets) > 0:
+            tweetArr = []
+            for row in noUrlTweets:
+                tweetArr.append(row["TWEET_ID"])
+            
+            tweetArr = getGifURLs(tweetArr)
+            print(tweetArr)
+            sql = "UPDATE tweets SET GIF_URL = ? WHERE TWEET_ID = ?"
+            
+            execute_many(sql, tweetArr)
     except sqlite3.Error as err:
         print("Error connecting to database", err)
     finally:
-        cursor.close()
+        con.close()
 
 def fetch_by_auth(authType):
     tweets = ""

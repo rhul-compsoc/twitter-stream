@@ -66,6 +66,10 @@
 				max-height: 40vh;
 			}
 
+			#gifContainer {
+				color: black;
+			}
+
 			.author {
 				display: flex;
 				align-items: center;
@@ -109,12 +113,15 @@
 				<p id="userName"></p>
 			</div>
 			<p id="tweetText"></p>
+			<div id="gifContainer">
+
+			</div>
 		</div>
 	</body>
 
 	<script>
 		let currentTweet = 0;
-		      const setNewTweet = ({ TWEET_AUTHOR_PF_LINK, TWEET_TEXT, TWEET_AUTHOR_USERNAME }) => {
+		      const setNewTweet = ({ TWEET_AUTHOR_PF_LINK, TWEET_TEXT, TWEET_AUTHOR_USERNAME, HAS_GIF, GIF_URL }) => {
 		          // links that twitter gives us will be in the form _normal.ext. the regex will remove the _normal
 		          document
 		              .getElementById('pfPicUrl')
@@ -126,6 +133,7 @@
 		              .setAttribute('onerror', `this.onerror=null;this.src="${TWEET_AUTHOR_PF_LINK}"`);
 
 		          document.getElementById('userName').innerText = TWEET_AUTHOR_USERNAME;
+							document.getElementById('gifContainer').innerText = `${HAS_GIF ? "This tweet has a gif!" : "This tweet has no gif!"} Gif URL: ${GIF_URL}`;
 		          document.getElementById('tweetText').innerText = TWEET_TEXT.replaceAll(/\n+/g,'\n');
 		          currentTweet = (currentTweet + 1) % tweets.length;
 		      };
@@ -139,9 +147,11 @@
 		          if (tweets.length > 1) {
 		              document.getElementById('tweetContainer').style.opacity = 0;
 		              setTimeout(() => {
+											currentTweet = currentTweet % tweets.length;
 		                  setNewTweet(tweets[currentTweet]);
 		                  document.getElementById('tweetContainer').style.opacity = 1;
 		              }, 2000);
+									// 😡😡😡😡😡 css fading is a thing grr
 		          }
 		      }, 30000);
 	</script>

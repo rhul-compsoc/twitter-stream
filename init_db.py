@@ -17,7 +17,6 @@ def main():
     	TWEET_TIME                      INTEGER,
         HAS_GIF                         BOOLEAN DEFAULT FALSE,
         GIF_URL                         VARCHAR(55) DEFAULT NULL,
-        GIF_NAME                        VARCHAR(19) DEFAULT NULL,
     	AUTHORIZED						INTEGER DEFAULT 0
     )"""
     )

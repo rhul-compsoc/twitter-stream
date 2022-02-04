@@ -128,7 +128,7 @@ def manageGifURLs():
                 tweetArr.append(row["TWEET_ID"])
             
             tweetArr = getGifURLs(tweetArr)
-            print(tweetArr)
+
             sql = "UPDATE tweets SET GIF_URL = ? WHERE TWEET_ID = ?"
             
             execute_many(sql, tweetArr)
@@ -307,7 +307,6 @@ if __name__ == "__main__":
     if not os.path.isfile("./TWEETS.db"):
         raise Exception("Initialise data base first pls")
     app.run(debug=True, host="0.0.0.0", port=5000)
-
     # Start the database updater thread
     t = Thread(target=refresh_database_thread, args=())
     t.start()

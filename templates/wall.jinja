@@ -109,7 +109,7 @@
 		</div>
 		<header>
 			<img src="/static/twitter-icon.svg" alt="twitter logo" />
-			<h1>Tweet at us using: #{{ hashtag }}</h1>
+			<h1>Tweet at us using: #{{ hashtag }} (now with gif support!1!!)</h1>
 		</header>
 		<div id="tweetContainer">
 			<div class="author">
@@ -140,14 +140,15 @@
 		              .setAttribute('onerror', `this.onerror=null;this.src="${TWEET_AUTHOR_PF_LINK}"`);
 
 		          document.getElementById('userName').innerText = TWEET_AUTHOR_USERNAME;
+							let container = document.getElementById('gifContainer');
+							container.innerHTML = '';
 							if(HAS_GIF){
-								let container = document.getElementById('gifContainer');
-								container.innerHTML = '';
 								let vidElement = document.createElement('video');
 								let sourceElement = document.createElement('source');
 								vidElement.setAttribute('loop', '');
 								vidElement.setAttribute('autoplay', '');
 								vidElement.setAttribute('muted', '');
+								vidElement.onclick = () => {vidElement.play()};
 								sourceElement.setAttribute('src', GIF_URL);
 								sourceElement.setAttribute('type', 'video/mp4');
 								vidElement.appendChild(sourceElement);
@@ -175,6 +176,6 @@
 		              }, 500);
 									// 😡😡😡😡😡 css fading is a thing grr
 		          }
-		      }, 3000);
+		      }, 30000);
 	</script>
 </html>

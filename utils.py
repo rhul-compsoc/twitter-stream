@@ -99,7 +99,6 @@ def getGifURLs(tweet_ids: list):
     #response = fetch(VIDEO_ENDPOINT_URL, params, auth=gen_twitter_auth)
     response = requests.get(VIDEO_ENDPOINT_URL, params, auth=gen_twitter_auth).json()
     out = []
-    print(response[0]["extended_entities"]["media"][0]["video_info"]["variants"][0]["url"])
     for x in response:
         try:
             # it's long and it might fail, but it will fail nicely

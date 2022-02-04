@@ -13,7 +13,6 @@ def fetch_from_env(key: str) -> str:
 DATABASE_FILE = "TWEETS.db"
 HASHTAG = "80s90s00s"
 
-
 class AUTH_TYPES(Enum):
     BAD = "0"
     GOOD = "1"
@@ -24,14 +23,17 @@ class AUTH_TYPES(Enum):
 BEARER_TOKEN = fetch_from_env("BEARER_TOKEN")
 # https://developer.twitter.com/en/docs/twitter-api/tweets/search/introduction
 ENDPOINT_URL = "https://api.twitter.com/2/tweets/search/recent"
+# https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-statuses-lookup
+VIDEO_ENDPOINT_URL = "https://api.twitter.com/1.1/statuses/lookup.json"
 MAX_BATCH = 400
 # @TODO: exclude any tweet with url/pictures
 SEARCH_QUERY = {
     "query": f"#{HASHTAG}",
-    "expansions": "author_id",
+    "expansions": "author_id,attachments.media_keys",
     # ISO 8601
     "tweet.fields": "created_at",
     "user.fields": "profile_image_url,username",
+    "media.fields": "type",
     "max_results": 100,
 }
 # ISO 8601 strptime
@@ -43,6 +45,10 @@ CLIENT_SECRET = fetch_from_env("OFFICE_365_CLIENT_SECRET")
 TENANT_ID = fetch_from_env("OFFICE_365_TENANT_ID")
 SCOPE = ["User.ReadBasic.All"]
 REDIRECT_PATH = "/redirect"
+
+# Bypass Authentication (for testing purposes)
+BYPASS_AUTHENTICATION = True if fetch_from_env("BYPASS_AUTHENTICATION") == "True" else False
+
 # HTTP STATUS CODES
 HTTP_CODE_NOT_FOUND = 404
 HTTP_CODE_BAD_AUTH = 401

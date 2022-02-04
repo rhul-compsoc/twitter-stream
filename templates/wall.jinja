@@ -66,6 +66,18 @@
 				max-height: 40vh;
 			}
 
+			#gifContainer {
+				color: black;
+				width: 100%;
+				max-width: 45vmin;
+				max-height: 70vmin;
+			}
+
+			#gifContainer video {
+				width: 100%;
+				
+				margin: auto;
+			}
 			.author {
 				display: flex;
 				align-items: center;
@@ -97,7 +109,7 @@
 		</div>
 		<header>
 			<img src="/static/twitter-icon.svg" alt="twitter logo" />
-			<h1>Tweet at us using: #{{ hashtag }}</h1>
+			<h1>Tweet at us using: #{{ hashtag }} (now with gif support!1!!)</h1>
 		</header>
 		<div id="tweetContainer">
 			<div class="author">
@@ -109,12 +121,14 @@
 				<p id="userName"></p>
 			</div>
 			<p id="tweetText"></p>
+			<div id="gifContainer"></div>
 		</div>
+		
 	</body>
 
 	<script>
 		let currentTweet = 0;
-		      const setNewTweet = ({ TWEET_AUTHOR_PF_LINK, TWEET_TEXT, TWEET_AUTHOR_USERNAME }) => {
+		      const setNewTweet = ({ TWEET_AUTHOR_PF_LINK, TWEET_TEXT, TWEET_AUTHOR_USERNAME, HAS_GIF, GIF_URL }) => {
 		          // links that twitter gives us will be in the form _normal.ext. the regex will remove the _normal
 		          document
 		              .getElementById('pfPicUrl')
@@ -126,6 +140,23 @@
 		              .setAttribute('onerror', `this.onerror=null;this.src="${TWEET_AUTHOR_PF_LINK}"`);
 
 		          document.getElementById('userName').innerText = TWEET_AUTHOR_USERNAME;
+							let container = document.getElementById('gifContainer');
+							container.innerHTML = '';
+							if(HAS_GIF){
+								let vidElement = document.createElement('video');
+								let sourceElement = document.createElement('source');
+								vidElement.setAttribute('loop', '');
+								vidElement.setAttribute('autoplay', '');
+								vidElement.setAttribute('muted', '');
+								vidElement.onclick = () => {vidElement.play()};
+								sourceElement.setAttribute('src', GIF_URL);
+								sourceElement.setAttribute('type', 'video/mp4');
+								vidElement.appendChild(sourceElement);
+								container.appendChild(vidElement);
+								vidElement.play();
+								//container.innerText = `${HAS_GIF ? "This tweet has a gif!" : "This tweet has no gif!"} Gif URL: ${GIF_URL}`;
+							}
+							
 		          document.getElementById('tweetText').innerText = TWEET_TEXT.replaceAll(/\n+/g,'\n');
 		          currentTweet = (currentTweet + 1) % tweets.length;
 		      };
@@ -139,9 +170,11 @@
 		          if (tweets.length > 1) {
 		              document.getElementById('tweetContainer').style.opacity = 0;
 		              setTimeout(() => {
+											currentTweet = currentTweet % tweets.length;
 		                  setNewTweet(tweets[currentTweet]);
 		                  document.getElementById('tweetContainer').style.opacity = 1;
-		              }, 2000);
+		              }, 500);
+									// 😡😡😡😡😡 css fading is a thing grr
 		          }
 		      }, 30000);
 	</script>

@@ -106,6 +106,10 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
+	.authorPic {
+		width: 5vmin;
+		height: 5vmin;
+	}
 </style>
 
 <div id="header">
@@ -113,7 +117,7 @@
 
 	<div id="filterButtons">
 		<form action="/update_db" method="post">
-			<input type="submit" value="Force Refresh of Tweet Database" />
+			<input type="submit" value="Force Refresh of Tweet Database" id="forceRefresh"/>
 		</form>
 
 		{% set filter_buttons = [ ('NEW','To Be Sorted'),('GOOD', 'Authorized'),
@@ -129,13 +133,17 @@
 <div id="tweets">
 	{% for tweet in tweets %}
 	<div class="tweet {%if tweet['AUTHORIZED'] == 0 %} bad {%elif tweet['AUTHORIZED'] == 1 %} good {%endif%}">
-        <img src="{{tweet['TWEET_AUTHOR_PF_LINK']}}">
+        <img src="{{tweet['TWEET_AUTHOR_PF_LINK']}}" class="authorPic">
 		<div style="padding: 15px; flex: 1">
 			<h2>
 				{{tweet['TWEET_AUTHOR_USERNAME']}} -
 				{{tweet['TWEET_AUTHOR_NAME']}}
 			</h2>
 			<p>{{tweet['TWEET_TEXT']}}</p>
+			{{
+				"<video id='gifContainer' autoplay loop muted onclick='this.play()'><source src="+tweet['GIF_URL']+" type='video/mp4'></source></video>" if(tweet['HAS_GIF']) else ""
+			}}
+			
 		</div>
 		<div class="authButtons">
 			<form
@@ -171,5 +179,12 @@
 	</div>
 	{% endfor %}
 </div>
+
+<script>
+// TODO: Remove this jank
+setTimeout(() => {
+	document.getElementById("forceRefresh").click();
+}, 10000);
+</script>
 
 {% endblock %}

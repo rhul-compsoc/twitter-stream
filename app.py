@@ -1,3 +1,4 @@
+from werkzeug.middleware.proxy_fix import ProxyFix
 from functools import wraps
 import json
 import os
@@ -20,6 +21,7 @@ from constants import (
     SCOPE,
     SEARCH_QUERY,
     TENANT_ID,
+    BYPASS_AUTHENTICATION,
 )
 from msal_utils import (
     _build_msal_app,
@@ -27,7 +29,7 @@ from msal_utils import (
     _load_cache,
     _save_cache,
 )
-from utils import execute_many, gen_twitter_auth, get_connection, fetch, parse_response
+from utils import execute_many, gen_twitter_auth, get_connection, fetch, parse_response, getGifURLs
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -37,7 +39,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 Session(app)
 
-from werkzeug.middleware.proxy_fix import ProxyFix
 
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
@@ -45,6 +46,9 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 def protect_route(f):
     @wraps(f)
     def wrap(*args, **kwargs):
+        if BYPASS_AUTHENTICATION:
+            return f(*args, **kwargs)
+
         token = _get_token_from_cache(SCOPE)
         if not token:
             return redirect(url_for("login"))
@@ -58,7 +62,8 @@ def latest_id():
     try:
         con, cursor = get_connection()
 
-        cursor.execute("SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
+        cursor.execute(
+            "SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
         lastest_tweet = cursor.fetchone()
 
     except sqlite3.Error as err:
@@ -71,13 +76,14 @@ def latest_id():
 
 @app.route("/update_db", methods=[HTTP_METHOD_POST])
 @protect_route
-def add_new_tweets():
+def add_new_tweets(noReturn=False):
     try:
         con, cursor = get_connection()
         lastest_tweet = latest_id()
 
         # if there are no tweets in the db, prevent Nonetype subscription
-        lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
+        lastest_tweet_id = {} if not lastest_tweet else {
+            "since_id": lastest_tweet["TWEET_ID"]}
 
         search_result = fetch(
             ENDPOINT_URL,
@@ -88,16 +94,49 @@ def add_new_tweets():
         parsed_response = parse_response(search_result)
 
         execute_many(
-            "INSERT INTO tweets VALUES (?, ?, ?, ?, ?, ?, ?)",
+            """INSERT INTO tweets (
+                    TWEET_ID,
+                    TWEET_TEXT,
+                    TWEET_AUTHOR_USERNAME,
+                    TWEET_AUTHOR_NAME,
+                    TWEET_AUTHOR_PF_LINK,
+                    TWEET_TIME, 
+                    HAS_GIF,
+                    AUTHORIZED
+                ) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
             parsed_response,
         )
     except sqlite3.Error as err:
         print("Error connecting to database", err)
     finally:
         con.close()
+        manageGifURLs()
+    
+    if not noReturn:
+        return redirect(url_for("panel"))
 
-    return redirect(url_for("panel"))
+def manageGifURLs():
+    sql = "SELECT TWEET_ID FROM tweets WHERE HAS_GIF = TRUE AND GIF_URL IS NULL"
+    
+    try:
+        con, cursor = get_connection()
+        cursor.execute(sql)
+        noUrlTweets = cursor.fetchall()
+        if len(noUrlTweets) > 0:
+            tweetArr = []
+            for row in noUrlTweets:
+                tweetArr.append(row["TWEET_ID"])
+            
+            tweetArr = getGifURLs(tweetArr)
 
+            sql = "UPDATE tweets SET GIF_URL = ? WHERE TWEET_ID = ?"
+            
+            execute_many(sql, tweetArr)
+    except sqlite3.Error as err:
+        print("Error connecting to database", err)
+    finally:
+        con.close()
 
 def fetch_by_auth(authType):
     tweets = ""
@@ -105,7 +144,8 @@ def fetch_by_auth(authType):
         con, cursor = get_connection()
 
         cursor.execute(
-            "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (authType.value,)
+            "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (
+                authType.value,)
         )
 
         tweets = cursor.fetchall()
@@ -115,7 +155,6 @@ def fetch_by_auth(authType):
         con.close()
 
     return tweets
-
 
 def set_tweet_auth(auth, tweet_id):
     try:
@@ -178,7 +217,8 @@ def index():
     )
 
 
-@app.route(REDIRECT_PATH)  # Its absolute URL must match your app's redirect_uri set in AAD
+# Its absolute URL must match your app's redirect_uri set in AAD
+@app.route(REDIRECT_PATH)
 def authorized():
     try:
         cache = _load_cache()
@@ -207,6 +247,9 @@ def logout():
 
 @app.route("/login")
 def login():
+    if BYPASS_AUTHENTICATION:
+        return redirect(url_for("panel"))
+
     token = _get_token_from_cache(SCOPE)
     if token:
         return redirect(url_for("panel"))
@@ -227,7 +270,7 @@ def refresh_database_thread():
     while 1:
         try:
             print("Updating the tweet database.")
-            add_new_tweets()
+            add_new_tweets(True)
         except Exception as e:
             print_last()
         sleep(10)
@@ -264,7 +307,6 @@ if __name__ == "__main__":
     if not os.path.isfile("./TWEETS.db"):
         raise Exception("Initialise data base first pls")
     app.run(debug=True, host="0.0.0.0", port=5000)
-
     # Start the database updater thread
     t = Thread(target=refresh_database_thread, args=())
     t.start()

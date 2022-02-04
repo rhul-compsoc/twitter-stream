@@ -99,7 +99,13 @@ def getGifURLs(tweet_ids: list):
         "id": ','.join(tweet_ids)
     }
     #response = fetch(VIDEO_ENDPOINT_URL, params, auth=gen_twitter_auth)
-    response = requests.get(VIDEO_ENDPOINT_URL, params, auth=gen_twitter_auth).json()
+    response = requests.get(VIDEO_ENDPOINT_URL, params, auth=gen_twitter_auth)
+    
+    if response.status_code != 200:
+        raise Exception(response.status_code, response.text)
+        return []
+    response = response.json()
+
     out = []
     for x in response:
         try:

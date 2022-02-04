@@ -4,6 +4,8 @@ This is a project that serves a moderated twitter timeline from a chosen hashtag
 
 ## Running
 
+-   Create a `.env` file with entries: `BEARER_TOKEN`, `OFFICE_365_CLIENT_ID`, `OFFICE_365_CLIENT_SECRET`, `OFFICE_365_TENANT_ID` and `BYPASS_AUTHENTICATION`
+
 -   Install dependencies with `pip3 install -r requirements.txt`
 
 -   Initialise the database by running the `python3 init_db.py` and follow the instructions

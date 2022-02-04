@@ -14,4 +14,7 @@ This is a project that serves a moderated twitter timeline from a chosen hashtag
 
 ## TODO
 
-- On my local system, the tweets needs to be manually refreshed :( (might just be me)
+- the panels client file needs to request new information from the server periodically
+  (that's why it wasn't updating automatically)
+	I'll put in a timer to refresh the page every 10 seconds but come on boys, I see some slacking going on here 👀
+- sort out that HTML 🤮🤮🤮

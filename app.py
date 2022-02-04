@@ -76,7 +76,7 @@ def latest_id():
 
 @app.route("/update_db", methods=[HTTP_METHOD_POST])
 @protect_route
-def add_new_tweets():
+def add_new_tweets(noReturn=False):
     try:
         con, cursor = get_connection()
         lastest_tweet = latest_id()
@@ -113,7 +113,8 @@ def add_new_tweets():
         con.close()
         manageGifURLs()
     
-    return redirect(url_for("panel"))
+    if not noReturn:
+        return redirect(url_for("panel"))
 
 def manageGifURLs():
     sql = "SELECT TWEET_ID FROM tweets WHERE HAS_GIF = TRUE AND GIF_URL IS NULL"
@@ -154,7 +155,6 @@ def fetch_by_auth(authType):
         con.close()
 
     return tweets
-
 
 def set_tweet_auth(auth, tweet_id):
     try:
@@ -270,7 +270,7 @@ def refresh_database_thread():
     while 1:
         try:
             print("Updating the tweet database.")
-            add_new_tweets()
+            add_new_tweets(True)
         except Exception as e:
             print_last()
         sleep(10)

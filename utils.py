@@ -32,13 +32,15 @@ def parse_response(search_response):
         for author in search_response["includes"]["users"]
     }
 
-    # TODO: Add finding whether or not the tweet had a gif in it
-    gifs = {
-        gif["media_key"]: {
-            gif["type"] == "animated_gif"
+    if "media" in search_response["includes"]:
+        gifs = {
+            gif["media_key"]: {
+                gif["type"] == "animated_gif"
+            }
+            for gif in search_response["includes"]["media"]
         }
-        for gif in search_response["includes"]["media"]
-    }
+    else:
+        gifs = {}
 
     return [
         (

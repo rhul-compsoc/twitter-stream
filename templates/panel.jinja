@@ -117,7 +117,7 @@
 
 	<div id="filterButtons">
 		<form action="/update_db" method="post">
-			<input type="submit" value="Force Refresh of Tweet Database" />
+			<input type="submit" value="Force Refresh of Tweet Database" id="forceRefresh"/>
 		</form>
 
 		{% set filter_buttons = [ ('NEW','To Be Sorted'),('GOOD', 'Authorized'),
@@ -179,5 +179,12 @@
 	</div>
 	{% endfor %}
 </div>
+
+<script>
+// TODO: Remove this jank
+setTimeout(() => {
+	document.getElementById("forceRefresh").click();
+}, 10000);
+</script>
 
 {% endblock %}

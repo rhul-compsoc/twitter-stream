@@ -1,3 +1,4 @@
+from enum import IntEnum
 from werkzeug.middleware.proxy_fix import ProxyFix
 from functools import wraps
 import json
@@ -15,6 +16,7 @@ from constants import (
     AUTH_TYPES,
     ENDPOINT_URL,
     HASHTAG,
+    HTTP_CODE_BAD_REQUEST,
     HTTP_CODE_NOT_FOUND,
     HTTP_METHOD_POST,
     REDIRECT_PATH,
@@ -29,7 +31,14 @@ from msal_utils import (
     _load_cache,
     _save_cache,
 )
-from utils import execute_many, gen_twitter_auth, get_connection, fetch, parse_response, getGifURLs
+from utils import (
+    execute_many,
+    gen_twitter_auth,
+    get_connection,
+    fetch,
+    parse_response,
+    getGifURLs,
+)
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -62,8 +71,7 @@ def latest_id():
     try:
         con, cursor = get_connection()
 
-        cursor.execute(
-            "SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
+        cursor.execute("SELECT TWEET_ID FROM tweets ORDER BY TWEET_TIME DESC LIMIT 1")
         lastest_tweet = cursor.fetchone()
 
     except sqlite3.Error as err:
@@ -82,8 +90,7 @@ def add_new_tweets(noReturn=False):
         lastest_tweet = latest_id()
 
         # if there are no tweets in the db, prevent Nonetype subscription
-        lastest_tweet_id = {} if not lastest_tweet else {
-            "since_id": lastest_tweet["TWEET_ID"]}
+        lastest_tweet_id = {} if not lastest_tweet else {"since_id": lastest_tweet["TWEET_ID"]}
 
         search_result = fetch(
             ENDPOINT_URL,
@@ -112,13 +119,14 @@ def add_new_tweets(noReturn=False):
     finally:
         con.close()
         manageGifURLs()
-    
+
     if not noReturn:
         return redirect(url_for("panel"))
 
+
 def manageGifURLs():
     sql = "SELECT TWEET_ID FROM tweets WHERE HAS_GIF = TRUE AND GIF_URL IS NULL"
-    
+
     try:
         con, cursor = get_connection()
         cursor.execute(sql)
@@ -127,16 +135,17 @@ def manageGifURLs():
             tweetArr = []
             for row in noUrlTweets:
                 tweetArr.append(row["TWEET_ID"])
-            
+
             tweetArr = getGifURLs(tweetArr)
 
             sql = "UPDATE tweets SET GIF_URL = ? WHERE TWEET_ID = ?"
-            
+
             execute_many(sql, tweetArr)
     except sqlite3.Error as err:
         print("Error connecting to database", err)
     finally:
         con.close()
+
 
 def fetch_by_auth(authType):
     tweets = ""
@@ -144,8 +153,7 @@ def fetch_by_auth(authType):
         con, cursor = get_connection()
 
         cursor.execute(
-            "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (
-                authType.value,)
+            "SELECT * from tweets WHERE AUTHORIZED=? ORDER BY TWEET_TIME DESC", (authType.value,)
         )
 
         tweets = cursor.fetchall()
@@ -155,6 +163,7 @@ def fetch_by_auth(authType):
         con.close()
 
     return tweets
+
 
 def set_tweet_auth(auth, tweet_id):
     try:
@@ -303,10 +312,18 @@ def since_id():
     )
 
 
+@app.route("/api/fetch_by", defaults={"auth": AUTH_TYPES.NEW.name})
+@app.route("/api/fetch_by/<string:auth>")
+def fetch_by(auth):
+    if not (auth in AUTH_TYPES.__members__.keys()):
+        return "AUTH TYPE UNKNOWN", HTTP_CODE_BAD_REQUEST
+    return jsonify(fetch_by_auth(AUTH_TYPES[auth]))
+
+
 if __name__ == "__main__":
     if not os.path.isfile("./TWEETS.db"):
         raise Exception("Initialise data base first pls")
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=8000)
     # Start the database updater thread
     t = Thread(target=refresh_database_thread, args=())
     t.start()

@@ -1,10 +1,12 @@
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function Page() {
+    const session = useSession();
+
     return (
         <>
             <h1 className="text-center text-2xl font-bold my-2 capitalize">
-                admin User Detected
+                admin User Detected {session.data?.user?.name}
             </h1>
 
             <button

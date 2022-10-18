@@ -1,4 +1,8 @@
-import { GetStaticProps, GetStaticPropsContext } from 'next';
+import {
+    GetServerSidePropsContext,
+    GetStaticProps,
+    GetStaticPropsContext
+} from 'next';
 import {
     ClientSafeProvider,
     getProviders,
@@ -35,11 +39,11 @@ const Login: React.FC<{ providers: Awaited<typeof getProviders> }> = ({
     );
 };
 
-export async function getStaticProps(_: GetStaticPropsContext) {
+export async function getServerSideProps(_: GetServerSidePropsContext) {
     const providers = await getProviders();
-
     return {
         props: { providers }
     };
 }
+
 export default Login;

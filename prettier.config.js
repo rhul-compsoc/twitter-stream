@@ -1,4 +1,4 @@
-{
+module.export = {
 	"trailingComma": "none",
 	"bracketSameLine": true,
 	"tabWidth": 4,
@@ -6,12 +6,4 @@
 	"singleQuote": true,
 	"printWidth": 80,
 	"useTabs": true,
-	"overrides": [
-		{
-			"files": "*.jinja",
-			"options": {
-				"parser": "html"
-			}
-		}
-	]
 }

@@ -1,8 +1,4 @@
-import {
-    GetServerSidePropsContext,
-    GetStaticProps,
-    GetStaticPropsContext
-} from 'next';
+import { GetServerSidePropsContext } from 'next';
 import {
     ClientSafeProvider,
     getProviders,

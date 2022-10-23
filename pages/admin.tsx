@@ -1,21 +1,15 @@
 import { signOut, useSession } from 'next-auth/react';
+import Navbar from '../components/navbar';
 
 export default function Page() {
     const session = useSession();
 
     return (
         <>
+            <Navbar name={session.data?.user?.name || ''} />
             <h1 className="text-center text-2xl font-bold my-2 capitalize">
-                admin User Detected {session.data?.user?.name}
+                admin User Detected
             </h1>
-
-            <button
-                className="btn btn-error hover:bg-black hover:text-white mx-auto block my-14"
-                onClick={() => {
-                    signOut();
-                }}>
-                logout
-            </button>
         </>
     );
 }

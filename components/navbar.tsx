@@ -1,6 +1,9 @@
 import { signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
-const Navbar: React.FC<{ name: string }> = ({ name }) => {
+const Navbar: React.FC = () => {
+    const session = useSession();
+
     return (
         <div className="navbar bg-base-300 shadow-xl relative">
             <div className="flex-1">
@@ -10,7 +13,7 @@ const Navbar: React.FC<{ name: string }> = ({ name }) => {
             </div>
 
             <h1 className="normal-case text-xl font-bold absolute left-1/2 -translate-x-1/2">
-                {name}
+                {session.data?.user?.name}
             </h1>
 
             <div className="flex-none">

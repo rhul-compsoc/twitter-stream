@@ -1,7 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Monoton&family=Poiret+One&family=Press+Start+2P&family=Righteous&family=Silkscreen&family=Zen+Dots&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
     box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    /* Here are some fonts I've picked out, see what ones we like and remove the rest! */
+    font-family: 'Monoton', cursive;
+
+    font-family: 'Poiret One', cursive;
+
+    font-family: 'Press Start 2P', cursive;
+
+    font-family: 'Righteous', cursive;
+
+    font-family: 'Silkscreen', cursive;
+
+    font-family: 'Zen Dots', cursive;
+}
+
+.wallContainer {
+    box-shadow: inset 0px 0px 40px 40px #05f4ff;
+}
+
+.movingGridConfig {
+    --grid-color:rgba(115,59,139,0.7);
+    --grid-size:30px;
+    --grid-blur:1px;
+}
+/* https://codepen.io/inegoita/pen/BgdXMw Trying to add this */
+.animatedGrid {
+    height: 150%;
+    top: 0;
+    background-image: repeating-linear-gradient(
+            90deg,
+            var(--grid-color, black) 0%,
+            transparent calc(1px + var(--grid-blur, 0px)),
+            transparent var(--grid-size),
+            var(--grid-color, black)
+                calc(var(--grid-size) + 1px + var(--grid-blur, 0px))
+        ),
+        repeating-linear-gradient(
+            180deg,
+            var(--grid-color, black) 0%,
+            transparent calc(1px + var(--grid-blur, 0px)),
+            transparent var(--grid-size),
+            var(--grid-color, black)
+                calc(var(--grid-size) + 1px + var(--grid-blur, 0px))
+        );
+    transform: perspective(50vh) rotateX(60deg) translateZ(10px);
+    animation: moving-grid 0.5s infinite linear;
+    z-index: -1;
+}
+
+@keyframes moving-grid {
+    0% {
+        transform: perspective(50vh) rotateX(60deg) translateZ(10px)
+            translateY(-var(--grid-size));
+    }
+    100% {
+        transform: perspective(50vh) rotateX(60deg) translateZ(10px)
+            translateY(var(--grid-size));
+    }
 }

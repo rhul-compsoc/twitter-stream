@@ -6,21 +6,23 @@ const wall: NextPageWithLayout = () => {
     return (
         <>
             <div className="flex-1 p-20">
-                <div className="w-full h-full bg-slate-700 shadow-2xl p-4 rounded-2xl wallContainer">
-                    <div className="font-bold text-center flex mt-6">
-                        <div className="text-6xl m-auto text-shadow-xl shadow-red text-black">
-                            The Twitter Feed
+                <div className="w-full h-full bg-slate-700 shadow-2xl rounded-2xl wallContainer overflow-hidden">
+                    <div className="flex mt-6 flex-1">
+                        <div className="text-4xl m-auto text-shadow-xl shadow-red text-black font-bold text-center ">
+                            The 80s90s00s Twitter Feed
                         </div>
                     </div>
-                    <div className="border border-2xl h-32  align-middle">overflow-hidden
-                        <div className="movingGridConfig animatedGrid h-64 w-full bg-black m-auto"></div>
-                    </div>
-                    
-
-                    <div className="flex justify-center align-middle h-full">
+                    <div className="flex justify-center align-middle flex-1">
                         <div className="m-auto text-5xl text-white pl-32 pr-32 select-none">
-                            Have my babies Joshua Yewman 😍😍😍😏😏
-                            Super long ipsumdfsgnoifdskljnfdskhjlnafsdio;jhp asdf o;hjnulfdasljkbnfadshio;jul dfsahlou iadsfhjkl nsadfkjlbndsfkbhj
+                            I am a tweet!
+                        </div>
+                    </div>
+                    <div className="overflow-hidden bg-black absolute bottom-[10vh] w-full">
+                        <div className="h-32 align-middle relative top-[-10vh]">
+                            <div className="movingGridConfig animatedGrid m-auto"></div>
+                        </div>
+                        <div className="text-white text-2xl">
+                            hi
                         </div>
                     </div>
                     

@@ -8,6 +8,14 @@ const getMaxPerLine = (size: number) => Math.floor(3 * Math.sqrt(size));
 const splitText = (text: string) => text.split(' ').reduce((acc: string[], c: string, i, arr) => {
   // this is required as we can't just let the system automatically put the text on a new line sadly
   const maxPerLine = getMaxPerLine(arr.join(' ').split('').length);
+
+  console.log(`C length: ${c.length}`);
+  while (c.length > maxPerLine) {
+    console.log(`c: ${c} - too long, splitting`);
+    acc.push(c.slice(0, maxPerLine));
+    c = `-${c.slice(maxPerLine)}`;
+  }
+
   c += ' ';
   if (acc.length < 1) {
     return [c];
@@ -16,6 +24,7 @@ const splitText = (text: string) => text.split(' ').reduce((acc: string[], c: st
     acc[acc.length - 1] += c;
     return acc;
   }
+
   return [...acc, c];
 }, []);
 
@@ -51,7 +60,7 @@ const VaporWave = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => 
 
         {
 						splitText(tweet).map((line, i) => (
-  <div className="chrome shine" style={{ '--shine-delay': `${i}s`, fontSize: `${((1 / tweet.length) * 150) + 3}em` } as React.CSSProperties} data-text={line} key={i}>
+  <div className="chrome shine" style={{ '--shine-delay': `${i / 1.5}s`, fontSize: `${((1 / tweet.length) * 150) + 3}em` } as React.CSSProperties} data-text={line} key={i}>
     {line}
     <span className="spark z-50" />
   </div>

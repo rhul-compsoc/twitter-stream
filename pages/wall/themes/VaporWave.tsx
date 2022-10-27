@@ -1,4 +1,23 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/style-prop-object */
+import React from 'react';
+
+const getMaxPerLine = (size: number) => Math.floor(3 * Math.sqrt(size));
+
+const splitText = (text: string) => text.split(' ').reduce((acc: string[], c: string, i, arr) => {
+  // this is required as we can't just let the system automatically put the text on a new line sadly
+  const maxPerLine = getMaxPerLine(arr.join(' ').split('').length);
+  c += ' ';
+  if (acc.length < 1) {
+    return [c];
+  }
+  if ((acc[acc.length - 1].length + c.length) < maxPerLine) {
+    acc[acc.length - 1] += c;
+    return acc;
+  }
+  return [...acc, c];
+}, []);
 
 /**
  * This is the vaporwave theme for the wall.
@@ -23,8 +42,6 @@ const VaporWave = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => 
         <div className="mountain eleven" />
         <div className="mountain twelve" />
       </div>
-
-      <div className="road-off" />
       <div className="overlay" />
 
       <div className="absolute top-12 glow w-full flex justify-center text-5xl ">
@@ -32,11 +49,15 @@ const VaporWave = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => 
       </div>
       <div className="text">
 
-        <div className="chrome shine" data-text="80'S RETRO">
-          80
-          <span className="spark" />
-          'S RETRO
-        </div>
+        {
+						splitText(tweet).map((line, i) => (
+  <div className="chrome shine" style={{ '--shine-delay': `${i}s`, fontSize: `${((1 / tweet.length) * 150) + 3}em` } as React.CSSProperties} data-text={line} key={i}>
+    {line}
+    <span className="spark z-50" />
+  </div>
+						))
+
+				}
         {/* <div className="chrome shine" data-text="DESIGN" style="--shine-delay:1s;">
           DESIGN
           <span className="spark spark-offset" />

@@ -67,7 +67,7 @@ body {
         );
     transform: perspective(50vh) rotateX(60deg) translateZ(10px);
     animation: moving-grid 0.5s infinite linear;
-    z-index: 2;
+    z-index: 0;
 }
 
 @keyframes moving-grid {
@@ -174,9 +174,9 @@ body {
             #010310 0,
             #0c1142 24%,
             #45125e 45%,
-            #d53567 60%,
-            #f0c3d9 57%,
-            #0c1142 57%
+            #d53567 50%,
+            #f0c3d9 59.5%,
+            #0c1142 59.5%
         )
         fixed;
     background-size: 100% var(--background-height, 100vh);
@@ -255,14 +255,15 @@ body {
 }
 
 .glow {
-    color: #fff;
+    color: #3c57d6;
     text-align: center;
-    -webkit-animation: glow 1s ease-in-out infinite alternate;
-    -moz-animation: glow 1s ease-in-out infinite alternate;
-    animation: glow 1s ease-in-out infinite alternate;
+    -webkit-animation: glowAnimation 1s ease-in-out infinite alternate;
+    -moz-animation: glowAnimation 1s ease-in-out infinite alternate;
+    animation: glowAnimation 1s ease-in-out infinite alternate;
+    z-index: 999;
 }
 
-@-webkit-keyframes glow {
+@keyframes glowAnimation {
     from {
         text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073,
             0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073,
@@ -278,7 +279,7 @@ body {
 .chrome {
     font-family: 'Montserrat';
     font-weight: 900;
-    font-size: calc(30px + 10vh);
+
     background-image: linear-gradient(
         #2989cc 0%,
         #d3e5ec 50%,
@@ -291,19 +292,20 @@ body {
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: rgba(255, 255, 255, 0.4);
+    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-color: rgba(0, 0, 0, 1);
     position: relative;
 }
 
 .chrome:before {
     content: attr(data-text);
+    
     text-shadow: -1px -1px 1px #2989cc, -2px -2px 1px #2989cc,
         -3px -3px 1px #2989cc, 1px 1px 1px #000, 0px -1px 2px #000,
         -1px -2px 2px #000, 0 0 5px rgba(255, 255, 255, 1);
     opacity: 1;
     position: absolute;
-    z-index: 1;
+    z-index: -1;
 }
 
 .shine:after {
@@ -314,6 +316,7 @@ body {
         white 55%,
         transparent 58%
     );
+    
     width: 100%;
     height: 100%;
     position: absolute;
@@ -360,7 +363,7 @@ body {
     animation-delay: -2.5s;
 }
 
-@-webkit-keyframes blip {
+@keyframes blip {
     0% {
         transform: scale(0);
     }

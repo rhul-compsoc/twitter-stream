@@ -36,15 +36,16 @@ const heightDVDLogo = 97.45;
 
 interface DVDLogoProps {
 	containerRef: React.RefObject<HTMLDivElement>;
+  cornerHit: () => void;
 }
 
 const DVDLogo = (props: DVDLogoProps) => {
-  const { containerRef } = props;
+  const { containerRef, cornerHit } = props;
   const svgRef = useRef<SVGSVGElement>(null);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [scale, setScale] = useState(1); // TODO: fix this
-  const [xSpeed, setXSpeed] = useState<number>(10);
-  const [ySpeed, setYSpeed] = useState<number>(10);
+  const [xSpeed, setXSpeed] = useState<number>(5);
+  const [ySpeed, setYSpeed] = useState<number>(5);
   const [logoColor, setLogoColor] = useState<string>(COLORS[0]);
 
   useEffect(() => {
@@ -53,12 +54,16 @@ const DVDLogo = (props: DVDLogoProps) => {
     while (newColour === logoColor) {
       newColour = COLORS[Math.floor(Math.random() * COLORS.length)];
     }
+    if (position.x + xSpeed < 0 || position.x + xSpeed > ((containerRef.current?.clientWidth || 0) - widthDVDLogo)) {
+      if (position.y + ySpeed < 0 || position.y + ySpeed > ((containerRef.current?.clientHeight || 0) - heightDVDLogo)) {
+        cornerHit();
+      }
+    }
     setLogoColor(newColour);
   }, [xSpeed, ySpeed]);
 
   useEffect(() => {
     if (containerRef?.current) {
-      console.log('containerRef.current', containerRef.current);
       const interval = setTimeout(() => requestAnimationFrame(() => {
         const width = containerRef?.current?.clientWidth || 50;
         const height = containerRef?.current?.clientHeight || 50;
@@ -66,8 +71,6 @@ const DVDLogo = (props: DVDLogoProps) => {
           setXSpeed(-Math.abs(xSpeed));
         } else if (position.x + xSpeed <= 0) {
           setXSpeed(Math.abs(xSpeed));
-        } else {
-          console.log(`x: ${position.x}, xSpeed: ${xSpeed}`);
         }
         if (position.y + ySpeed + (heightDVDLogo * scale) >= height) {
           setYSpeed(-Math.abs(ySpeed));
@@ -75,7 +78,6 @@ const DVDLogo = (props: DVDLogoProps) => {
           setYSpeed(Math.abs(ySpeed));
         }
         setPosition({ x: (position.x + xSpeed), y: (position.y + ySpeed) });
-        console.log(`x: ${position.x}, y: ${position.y} ref:`, svgRef.current);
       }), 5);
       return () => clearTimeout(interval);
     }

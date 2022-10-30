@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { XyzTransitionGroup } from '@animxyz/react';
 import { splitText } from '../VaporWave';
 import DVDLogo from './DVDLogo';
 import css from './Nintees.module.css';
@@ -33,7 +32,7 @@ const Ninteens = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => {
           {topBanner}
         </div>
         <div className={`h-full flex align-middle z-10 ${spin && 'animate-spin'}`}>
-          <div className={`m-auto text-5xl h-fit ${css.tweetText}`}>
+          <div className={`m-auto text-center text-5xl h-fit ${css.tweetText}`}>
             {
             splitText(tweet).map((line, i) => (
               <div>{line}</div>

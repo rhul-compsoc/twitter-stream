@@ -4,9 +4,9 @@
 import React from 'react';
 import css from './VaporWave.module.css';
 
-const getMaxPerLine = (size: number) => Math.floor(3 * Math.sqrt(size));
+export const getMaxPerLine = (size: number) => Math.floor(3 * Math.sqrt(size));
 
-const splitText = (text: string) => text.split(' ').reduce((acc: string[], c: string, i, arr) => {
+export const splitText = (text: string) => text.split(' ').reduce((acc: string[], c: string, i, arr) => {
   // this is required as we can't just let the system automatically put the text on a new line sadly
   const maxPerLine = getMaxPerLine(arr.join(' ').split('').length);
 

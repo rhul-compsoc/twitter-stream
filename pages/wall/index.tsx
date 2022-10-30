@@ -1,6 +1,7 @@
 import Heart from '../../components/assets/heart';
 import MainLayout from '../../components/layouts/mainLayout';
 import { NextPageWithLayout } from '../_app';
+import Ninteens from './themes/Nintees';
 import VaporWave from './themes/VaporWave';
 
 const tweet = 'Joshua Yewman, have my babies! <3';
@@ -14,8 +15,10 @@ const wall: NextPageWithLayout = () => (
       <div className="w-full h-full bg-slate-700 shadow-2xl rounded-2xl overflow-hidden m-auto relative">
         {/**
          * This is the vaporwave theme for the wall. We should have it rotate through different themes imo.
+         * <VaporWave tweet={tweet} topBanner="The 80s90s00s Twitter Feed!" />
          */}
-        <VaporWave tweet={tweet} topBanner="The 80s90s00s Twitter Feed!" />
+
+        <Ninteens tweet={tweet3} topBanner="The 80s90s00s Twitter Feed!" />
       </div>
     </div>
 

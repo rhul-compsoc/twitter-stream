@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/style-prop-object */
 import React from 'react';
+import css from './VaporWave.module.css';
 
 const getMaxPerLine = (size: number) => Math.floor(3 * Math.sqrt(size));
 
@@ -9,7 +10,6 @@ const splitText = (text: string) => text.split(' ').reduce((acc: string[], c: st
   // this is required as we can't just let the system automatically put the text on a new line sadly
   const maxPerLine = getMaxPerLine(arr.join(' ').split('').length);
 
-  console.log(`C length: ${c.length}`);
   while (c.length > maxPerLine) {
     console.log(`c: ${c} - too long, splitting`);
     acc.push(c.slice(0, maxPerLine));
@@ -34,43 +34,38 @@ const splitText = (text: string) => text.split(' ').reduce((acc: string[], c: st
  */
 const VaporWave = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => (
   <div>
-    <div className="background-80s animated-clouds stars parentContainer z-50">
-      <div className="sun" />
-      <div className="grid" />
-      <div className="mountains">
-        <div className="mountain one" />
-        <div className="mountain two" />
-        <div className="mountain three" />
-        <div className="mountain four" />
-        <div className="mountain five" />
-        <div className="mountain six" />
-        <div className="mountain seven" />
-        <div className="mountain eight" />
-        <div className="mountain nine" />
-        <div className="mountain ten" />
-        <div className="mountain eleven" />
-        <div className="mountain twelve" />
+    <div className={`${css.background80s} ${css.animatedClouds} ${css.stars} ${css.parentContainer} z-50`}>
+      <div className={css.sun} />
+      <div className={css.grid} />
+      <div className={css.mountains}>
+        <div className={`${css.mountain} ${css.one}`} />
+        <div className={`${css.mountain} ${css.two}`} />
+        <div className={`${css.mountain} ${css.three}`} />
+        <div className={`${css.mountain} ${css.four}`} />
+        <div className={`${css.mountain} ${css.five}`} />
+        <div className={`${css.mountain} ${css.six}`} />
+        <div className={`${css.mountain} ${css.seven}`} />
+        <div className={`${css.mountain} ${css.eight}`} />
+        <div className={`${css.mountain} ${css.nine}`} />
+        <div className={`${css.mountain} ${css.ten}`} />
+        <div className={`${css.mountain} ${css.eleven}`} />
+        <div className={`${css.mountain} ${css.twelve}`} />
       </div>
-      <div className="overlay" />
+      <div className={css.overlay} />
 
-      <div className="absolute top-12 glow w-full flex justify-center text-5xl ">
+      <div className={`absolute top-12 w-full flex justify-center text-5xl ${css.glow}`}>
         {topBanner}
       </div>
-      <div className="text">
-
+      <div className={css.text}>
         {
 						splitText(tweet).map((line, i) => (
-  <div className="chrome shine" style={{ '--shine-delay': `${i / 1.5}s`, fontSize: `${((1 / tweet.length) * 150) + 3}em` } as React.CSSProperties} data-text={line} key={i}>
+  <div className={`${css.chrome} ${css.shine}`} style={{ '--shine-delay': `${i / 1.5}s`, fontSize: `${((1 / tweet.length) * 150) + 2.5}em` } as React.CSSProperties} data-text={line} key={i}>
     {line}
-    <span className="spark z-50" />
+    {(Math.random() > 0.5) && <span className={`z-50 ${css.spark}`} />}
   </div>
 						))
 
 				}
-        {/* <div className="chrome shine" data-text="DESIGN" style="--shine-delay:1s;">
-          DESIGN
-          <span className="spark spark-offset" />
-        </div> */}
       </div>
     </div>
     <svg width="0" height="0">
@@ -119,10 +114,7 @@ const VaporWave = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => 
         fill="freeze"
       />
     </svg>
-    <a href="https://www.mockofun.com/tutorials/add-grid-to-photo/" target="_blank" rel="noreferrer">Grid Drawing Tool</a>
-
   </div>
-
 );
 
 export default VaporWave;

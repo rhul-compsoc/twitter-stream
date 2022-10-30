@@ -10,7 +10,6 @@ const Ninteens = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [spin, setSpin] = useState(false);
 
-
   // Whenever a corner is hit by the DVD, the tweet will spin!
   useEffect(() => {
     if (spin) {

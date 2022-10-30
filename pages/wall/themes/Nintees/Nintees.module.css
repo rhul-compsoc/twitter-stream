@@ -6,11 +6,11 @@
 }
 
 .blink {
-	 animation: blink .75s linear infinite;
+	 animation: blink 0.8s linear infinite;
 }
 
 .tweetText {
-    animation: animatedText 2s ease-in-out alternate infinite;
+    animation: animatedText 1.5s ease-in-out alternate infinite;
 }
 
 @keyframes blink {

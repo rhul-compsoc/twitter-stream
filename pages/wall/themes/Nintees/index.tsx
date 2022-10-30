@@ -14,10 +14,10 @@ const Ninteens = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => {
   return (
     <div className={`h-full w-full ${css.ninteesContainer}`} ref={containerRef}>
       <div className="flex flex-col w-full h-full justify-center align-middle">
-        <div className={`flex-1 text-center w-full text-5xl m-14 ${css.blink}`}>
+        <div className={`flex-1 text-center w-full text-5xl m-14 z-10 ${css.blink}`}>
           {topBanner}
         </div>
-        <div className="h-full flex align-middle">
+        <div className="h-full flex align-middle z-10">
           <div className={`m-auto text-5xl h-fit ${css.tweetText}`}>
             {
 						splitText(tweet).map((line, i) => (
@@ -26,7 +26,7 @@ const Ninteens = ({ tweet, topBanner }: {tweet: string, topBanner: string}) => {
 					}
           </div>
         </div>
-        <img src="https://i.imgur.com/QkBkUkC.gif" className="w-64 h-32 m-auto mb-5" />
+        <img src="https://i.imgur.com/QkBkUkC.gif" className="w-64 h-32 m-auto mb-5 z-10" />
         <DVDLogo containerRef={containerRef} />
       </div>
 

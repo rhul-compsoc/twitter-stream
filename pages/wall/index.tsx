@@ -18,7 +18,7 @@ const wall: NextPageWithLayout = () => (
          * <VaporWave tweet={tweet} topBanner="The 80s90s00s Twitter Feed!" />
          */}
 
-        <Ninteens tweet={tweet3} topBanner="The 80s90s00s Twitter Feed!" />
+        <Ninteens tweet={tweet4} topBanner="The 80s90s00s Twitter Feed!" />
       </div>
     </div>
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { splitText } from '../VaporWave-';
+import { splitText } from '../VaporWave';
 import DVDLogo from './DVDLogo';
 import css from './Nintees.module.css';
 

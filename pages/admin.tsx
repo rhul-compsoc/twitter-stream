@@ -19,13 +19,13 @@ const Admin = () => {
 
             <Navbar />
 
-            <h1 className="text-center text-2xl font-bold my-2 capitalize">
+            <h1 className="my-2 text-center text-2xl font-bold capitalize">
                 admin User Detected
             </h1>
 
             <span
-                className="bg-primary text-primary-content font-bold text-center m-10 shadow-2xl
-            rounded-2xl flex items-center justify-center p-8">
+                className="m-10 flex items-center justify-center rounded-2xl bg-primary
+            p-8 text-center font-bold text-primary-content shadow-2xl">
                 {JSON.stringify(data)}
             </span>
         </>

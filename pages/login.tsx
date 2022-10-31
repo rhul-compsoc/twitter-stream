@@ -1,3 +1,5 @@
+import Footer from '@components/footer';
+import MainLayout from '@components/layouts/mainLayout';
 import { GetServerSidePropsContext } from 'next';
 import {
     ClientSafeProvider,
@@ -7,10 +9,11 @@ import {
 } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { NextPageWithLayout } from './_app';
 
-const Login: React.FC<{ providers: Awaited<typeof getProviders> }> = ({
-    providers
-}) => {
+const Login: NextPageWithLayout<{
+    providers: Awaited<typeof getProviders>;
+}> = ({ providers }) => {
     const session = useSession();
     const router = useRouter();
 
@@ -20,20 +23,31 @@ const Login: React.FC<{ providers: Awaited<typeof getProviders> }> = ({
 
     return (
         <>
-            <h1 className="text-center text-2xl font-bold my-2 capitalize">
-                oioi
-            </h1>
-            {Object.values(providers).map((v: ClientSafeProvider) => (
-                <button
-                    key={v.id}
-                    className="btn mx-auto block my-14"
-                    onClick={() => signIn(v.id, { callbackUrl: '/admin' })}>
-                    Login
-                </button>
-            ))}
+            <div className="flex flex-1 items-center justify-center p-20">
+                <div className="rounded-2xl bg-primary p-4 shadow-2xl">
+                    <h1 className="my-2 text-center text-2xl font-bold capitalize">
+                        You are not authenticated
+                    </h1>
+                    {Object.values(providers).map((v: ClientSafeProvider) => (
+                        <button
+                            key={v.id}
+                            className="btn btn-wide mx-auto my-2 block"
+                            onClick={() =>
+                                signIn(v.id, { callbackUrl: '/admin' })
+                            }>
+                            Login
+                        </button>
+                    ))}
+                </div>
+            </div>
+            <Footer />
         </>
     );
 };
+
+Login.getLayout = (page) => (
+    <MainLayout className="flex h-screen w-screen">{page}</MainLayout>
+);
 
 export async function getServerSideProps(_: GetServerSidePropsContext) {
     const providers = await getProviders();

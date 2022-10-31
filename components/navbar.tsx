@@ -1,23 +1,22 @@
-import { signOut } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 const Navbar: React.FC = () => {
     const session = useSession();
 
     return (
-        <div className="navbar bg-base-300 shadow-xl relative">
+        <div className="navbar relative bg-base-300 shadow-xl">
             <div className="flex-1">
-                <a className="btn btn-ghost normal-case text-xl">
+                <a className="btn btn-ghost text-xl normal-case">
                     SU Twitter Feed
                 </a>
             </div>
 
-            <h1 className="normal-case text-xl font-bold absolute left-1/2 -translate-x-1/2">
+            <h1 className="absolute left-1/2 -translate-x-1/2 text-xl font-bold normal-case">
                 {session.data?.user?.name}
             </h1>
 
             <div className="flex-none">
-                <ul className="menu menu-horizontal p-0 gap-3">
+                <ul className="menu menu-horizontal gap-3 p-0">
                     <li>
                         <a className="btn btn-success text-success-content hover:bg-base-300 hover:text-white">
                             Verified
@@ -30,7 +29,7 @@ const Navbar: React.FC = () => {
                     </li>
                     <li>
                         <button
-                            className="btn btn-error hover:bg-base-300 hover:text-white mx-auto block text-black"
+                            className="btn btn-error mx-auto block text-black hover:bg-base-300 hover:text-white"
                             onClick={() => {
                                 signOut();
                             }}>

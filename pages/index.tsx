@@ -1,20 +1,30 @@
-import Heart from '../components/assets/heart';
+import Footer from '@components/footer';
+import Link from 'next/link';
 import MainLayout from '../components/layouts/mainLayout';
 import { NextPageWithLayout } from './_app';
 
 const IndexPage: NextPageWithLayout = () => {
     return (
         <>
-            <div className="flex-1 p-20">
-                <div className="w-full h-full bg-slate-600 shadow-2xl p-4 rounded-2xl">
-                    <h3 className="font-bold text-center text-2xl">
-                        Twitter Feed
-                    </h3>
+            <div className="flex flex-1 items-center justify-center p-20">
+                <div className="rounded-2xl bg-primary p-4 shadow-2xl">
+                    <h1 className="text-2xl font-bold text-primary-content">
+                        This is the Compsoc Twitter Wall!
+                    </h1>
+                    <Link href="/wall">
+                        <button className="btn btn-outline btn-secondary btn-wide m-4 mx-auto block">
+                            Wall
+                        </button>
+                    </Link>
+                    <Link href="/login">
+                        <button className="btn btn-outline btn-secondary btn-wide m-4 mx-auto block">
+                            Admin view
+                        </button>
+                    </Link>
                 </div>
             </div>
-            <span className="mt-auto text-center m-4">
-                Made with <Heart className="h-4 inline-block" /> by Compsoc
-            </span>
+
+            <Footer />
         </>
     );
 };

@@ -1,8 +1,8 @@
 import Heart from '../../components/assets/heart';
 import MainLayout from '../../components/layouts/mainLayout';
 import { NextPageWithLayout } from '../_app';
-import Ninteens from './themes/Nintees';
-import VaporWave from './themes/VaporWave';
+import Ninteens from '../../components/themes/Nintees';
+import VaporWave from '../../components/themes/VaporWave-';
 
 const tweet = 'Joshua Yewman, have my babies! <3';
 const tweet2 = 'It’s hard to imagine the internet without the constant buzz of Twitter';

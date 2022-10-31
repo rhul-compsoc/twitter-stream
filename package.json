@@ -16,6 +16,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^13.0.0",
     "@types/node": "^17",
     "@types/react": "^18.0.15",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
@@ -39,7 +40,8 @@
     },
     "extends": [
       "plugin:react/recommended",
-      "airbnb"
+      "airbnb",
+      "plugin:@next/next/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

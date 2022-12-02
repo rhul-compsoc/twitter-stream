@@ -49,7 +49,7 @@ const Timeline: NextApiHandler = async (req, res) => {
           },
         });
 
-        const data = {
+        const dataToPost = {
           tweet_id: tweet.id,
           tweet_text: tweet.text,
           tweet_created_at: new Date(tweet.created_at || ''),
@@ -61,7 +61,7 @@ const Timeline: NextApiHandler = async (req, res) => {
           process_result: banned ? 'b' : 'u',
         };
         await prisma.tweets.create({
-          data,
+          data: dataToPost,
         });
       }
     });

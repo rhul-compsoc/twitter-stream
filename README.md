@@ -39,3 +39,6 @@ Then, as long as you have a working internet connection, run `pnpm dev` to get s
 -   [ ] make the tweets show on the twitter wall
 -   [ ] Make the vaporwave text look nicer
 -   [ ] add a space to put usernames in for the posts
+-   [ ] Request the twitter endpoint every 20 seconds
+-   [ ] make the Verify endpoint secure
+-   [ ] remove tweets from the list after they have been posted

@@ -139,7 +139,6 @@ tweetsArr.length > 0 ? tweetsArr.map((tweet) => (
 )) : (<div className="bg-gray-900 text-3xl p-5 text-center">No Tweets To Show!</div>)
 }
 
-      {JSON.stringify(tweetsArr)}
     </>
   );
 };

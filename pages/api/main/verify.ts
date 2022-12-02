@@ -12,18 +12,15 @@ const Verify: NextApiHandler = async (req, res) => {
   const { tweet_id, process_result } = req.body as verifyType;
   console.log(tweet_id, process_result);
   try {
-    await prisma.tweets.update({
+    const tweet = await prisma.tweets.update({
       where: {
         tweet_id,
       },
       data: {
-        processed: {
-          create: {
-            process_result,
-          },
-        },
+        process_result,
       },
     });
+
     res.status(200).json({ success: true });
   } catch (error) {
     console.log(error);

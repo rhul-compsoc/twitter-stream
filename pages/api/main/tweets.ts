@@ -73,17 +73,8 @@ const Timeline: NextApiHandler = async (req, res) => {
       orderBy: {
         tweet_created_at: 'asc',
       },
-      include: {
-        processed: true,
-      },
       where: {
-        processed: {
-          some: {
-            process_result: {
-              equals: req.query.filter as string,
-            },
-          },
-        },
+        process_result: req.query.filter as string,
       },
       take: 100,
     });
@@ -94,15 +85,7 @@ const Timeline: NextApiHandler = async (req, res) => {
         tweet_created_at: 'asc',
       },
       where: {
-        processed: {
-          none: {
-            tweets: {
-              is: {
-
-              },
-            },
-          },
-        },
+        process_result: 'u',
       },
       take: 100,
     });

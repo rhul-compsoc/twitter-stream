@@ -7,23 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model processed {
-  id             Int       @id @default(autoincrement())
-  tweet_id       String    @db.VarChar(20)
-  process_result String    @db.Char(1)
-  processed_at   DateTime? @db.Timestamp(6)
-  processed_by   String?   @db.VarChar(20)
-  tweets         tweets    @relation(fields: [tweet_id], references: [tweet_id], onDelete: Cascade, onUpdate: NoAction)
-}
-
 model tweets {
-  tweet_id                       String      @id @db.VarChar(20)
+  tweet_id                       String    @id @db.VarChar(20)
   tweet_text                     String
-  tweet_created_at               DateTime    @db.Timestamp(6)
-  tweet_author_id                String      @db.VarChar(20)
-  tweet_author_name              String      @db.VarChar(20)
-  tweet_author_username          String      @db.VarChar(20)
-  tweet_author_created_at        DateTime?   @db.Timestamp(6)
-  tweet_author_profile_image_url String?     @db.VarChar(240)
-  processed                      processed[]
+  tweet_created_at               DateTime  @db.Timestamp(6)
+  tweet_author_id                String    @db.VarChar(20)
+  tweet_author_name              String    @db.VarChar(20)
+  tweet_author_username          String    @db.VarChar(20)
+  tweet_author_created_at        DateTime? @db.Timestamp(6)
+  tweet_author_profile_image_url String?   @db.VarChar(240)
+  process_result                 String?   @default("u") @db.Char(1)
+  processed_at                   DateTime? @db.Timestamp(6)
 }

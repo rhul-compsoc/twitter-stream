@@ -1,7 +1,7 @@
 import { NextApiHandler } from 'next';
 
-const TWITTER_BASEURL = 'https://api.twitter.com' as const;
-const HASHTAG = 'COMPSOCTEST' as const;
+const TWITTER_BASEURL = 'https://api.twitter.com';
+const HASHTAG = 'COMPSOCTEST';
 
 enum TWITTER_ENDPOINTS {
     RECENT_TWEETS = '2/tweets/search/recent/'

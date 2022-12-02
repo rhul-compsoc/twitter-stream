@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { processed, tweets } from '@prisma/client';
+import { tweets } from '@prisma/client';
 import Navbar from '../components/navbar';
 
 const fetchTimeline = async (filter?: string) => {
@@ -23,7 +23,7 @@ const fetchBanned = () => fetchTimeline('b');
 
 const Admin = () => {
   const [filter, setFilter] = useState('u');
-  const [tweetsArr, setTweets] = useState<(tweets & {processed: processed[];})[]>([]);
+  const [tweetsArr, setTweets] = useState<(tweets)[]>([]);
 
   const changeFilter = async (f: string) => {
     let newData;
@@ -139,7 +139,7 @@ tweetsArr.length > 0 ? tweetsArr.map((tweet) => (
 )) : (<div className="bg-gray-900 text-3xl p-5 text-center">No Tweets To Show!</div>)
 }
 
-      {JSON.stringify(tweets)}
+      {JSON.stringify(tweetsArr)}
     </>
   );
 };

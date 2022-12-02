@@ -1,4 +1,3 @@
-import { processed, tweets } from '@prisma/client';
 import { signOut, useSession } from 'next-auth/react';
 import React from 'react';
 
@@ -8,7 +7,7 @@ type NavbarProps = {
 
 const Navbar = (props: NavbarProps) => {
   const session = useSession();
-  const { setFilter} = props;
+  const { setFilter } = props;
 
   return (
     <div className="navbar relative bg-base-300 shadow-xl">

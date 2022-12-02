@@ -1,6 +1,6 @@
 import { NextApiHandler } from 'next';
-import prisma from '../../_prisma';
 import { Tweetv2SearchResult } from 'twitter-api-v2';
+import prisma from '../../_prisma';
 
 const TWITTER_BASEURL = 'https://api.twitter.com';
 const HASHTAG = 'COMPSOCTEST';

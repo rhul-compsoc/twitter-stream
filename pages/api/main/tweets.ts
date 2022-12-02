@@ -41,18 +41,27 @@ const Timeline: NextApiHandler = async (req, res) => {
       });
 
       if (!exists) {
-        // if it doesn't exist, create it again
-        await prisma.tweets.create({
-          data: {
-            tweet_id: tweet.id,
-            tweet_text: tweet.text,
-            tweet_created_at: new Date(tweet.created_at || ''),
+        // check if the user has posted a banned tweet
+        const banned = await prisma.tweets.findFirst({
+          where: {
             tweet_author_id: tweet.author_id,
-            tweet_author_name: author?.name || '',
-            tweet_author_username: author?.username || '',
-            tweet_author_profile_image_url: author?.profile_image_url,
-            tweet_author_created_at: new Date(tweet.created_at ? tweet.created_at : ''),
+            process_result: 'b',
           },
+        });
+
+        const data = {
+          tweet_id: tweet.id,
+          tweet_text: tweet.text,
+          tweet_created_at: new Date(tweet.created_at || ''),
+          tweet_author_id: tweet.author_id,
+          tweet_author_name: author?.name || '',
+          tweet_author_username: author?.username || '',
+          tweet_author_profile_image_url: author?.profile_image_url,
+          tweet_author_created_at: new Date(tweet.created_at ? tweet.created_at : ''),
+          process_result: banned ? 'b' : 'u',
+        };
+        await prisma.tweets.create({
+          data,
         });
       }
     });

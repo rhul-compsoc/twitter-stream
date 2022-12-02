@@ -31,3 +31,11 @@ If you are creating a new theme, please name the branch `theme-[name_of_theme]`,
 ## Running
 
 Then, as long as you have a working internet connection, run `pnpm dev` to get started!
+
+
+## TODO
+
+-   [ ] fix the admin console
+-   [ ] make the tweets show on the twitter wall
+-   [ ] Make the vaporwave text look nicer
+-   [ ] add a space to put usernames in for the posts

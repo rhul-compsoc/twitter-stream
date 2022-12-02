@@ -1,8 +1,14 @@
+import { processed, tweets } from '@prisma/client';
 import { signOut, useSession } from 'next-auth/react';
 import React from 'react';
 
-const Navbar: React.FC = () => {
+type NavbarProps = {
+  setFilter: (filter: string) => void;
+};
+
+const Navbar = (props: NavbarProps) => {
   const session = useSession();
+  const { setFilter} = props;
 
   return (
     <div className="navbar relative bg-base-300 shadow-xl">
@@ -19,12 +25,22 @@ const Navbar: React.FC = () => {
       <div className="flex-none">
         <ul className="menu menu-horizontal gap-3 p-0">
           <li>
-            <a className="btn btn-success text-success-content hover:bg-base-300 hover:text-white">
+            <a className="btn bg-slate-500 text-success-content hover:bg-base-300 hover:text-white" onClick={() => setFilter('u')}>
+              Unprocessed
+            </a>
+          </li>
+          <li>
+            <a className="btn btn-success text-success-content hover:bg-base-300 hover:text-white" onClick={() => setFilter('v')}>
               Verified
             </a>
           </li>
           <li>
-            <a className="btn btn-warning text-warning-content hover:bg-base-300 hover:text-white">
+            <a className="btn bg-orange-500 text-success-content hover:bg-base-300 hover:text-white" onClick={() => setFilter('d')}>
+              Unverified
+            </a>
+          </li>
+          <li>
+            <a className="btn bg-red-500 text-warning-content hover:bg-base-300 hover:text-white" onClick={() => setFilter('b')}>
               Banned
             </a>
           </li>

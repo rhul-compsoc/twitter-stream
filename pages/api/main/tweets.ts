@@ -2,8 +2,6 @@ import { NextApiHandler } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { Tweetv2SearchResult } from 'twitter-api-v2';
 
-const prisma = new PrismaClient();
-
 const TWITTER_BASEURL = 'https://api.twitter.com';
 const HASHTAG = 'COMPSOCTEST';
 
@@ -11,7 +9,8 @@ enum TWITTER_ENDPOINTS {
     RECENT_TWEETS = '2/tweets/search/recent/'
 }
 
-const Timeline: NextApiHandler = async (_, res) => {
+const Timeline: NextApiHandler = async (req, res) => {
+  const prisma = new PrismaClient();
   const url = new URL(TWITTER_ENDPOINTS.RECENT_TWEETS, TWITTER_BASEURL);
 
   Object.entries({
@@ -22,13 +21,13 @@ const Timeline: NextApiHandler = async (_, res) => {
     max_results: 100,
   }).map(([k, v]) => url.searchParams.append(k, v.toString()));
 
-  const req = await fetch(url, {
+  const tweetReq = await fetch(url, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${process.env.TWITTER_API_BEARER}`,
     },
   });
-  const data = await req.json() as Tweetv2SearchResult;
+  const data = await tweetReq.json() as Tweetv2SearchResult;
 
   // check if there are any tweets
   if (data.meta.result_count > 0) {
@@ -69,17 +68,48 @@ const Timeline: NextApiHandler = async (_, res) => {
       }
     });
   }
-  const tweets = await prisma.tweets.findMany({
-    orderBy: {
-      tweet_created_at: 'asc',
-    },
-    include: {
-      processed: true,
-    },
-    take: 100,
-  });
+  if (req.query.filter !== undefined) {
+    const tweets = await prisma.tweets.findMany({
+      orderBy: {
+        tweet_created_at: 'asc',
+      },
+      include: {
+        processed: true,
+      },
+      where: {
+        processed: {
+          some: {
+            process_result: {
+              equals: req.query.filter as string,
+            },
+          },
+        },
+      },
+      take: 100,
+    });
+    res.status(200).json(tweets);
+  } else {
+    const tweets = await prisma.tweets.findMany({
+      orderBy: {
+        tweet_created_at: 'asc',
+      },
+      where: {
+        processed: {
+          none: {
+            tweets: {
+              is: {
 
-  res.status(200).json(tweets);
+              },
+            },
+          },
+        },
+      },
+      take: 100,
+    });
+    console.log('request', req.query);
+
+    res.status(200).json(tweets);
+  }
 };
 
 export default Timeline;

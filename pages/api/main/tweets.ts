@@ -1,4 +1,8 @@
 import { NextApiHandler } from 'next';
+import { PrismaClient } from '@prisma/client';
+import { Tweetv2SearchResult } from 'twitter-api-v2';
+
+const prisma = new PrismaClient();
 
 const TWITTER_BASEURL = 'https://api.twitter.com';
 const HASHTAG = 'COMPSOCTEST';
@@ -24,8 +28,58 @@ const Timeline: NextApiHandler = async (_, res) => {
       Authorization: `Bearer ${process.env.TWITTER_API_BEARER}`,
     },
   });
+  const data = await req.json() as Tweetv2SearchResult;
 
-  res.status(200).json(await req.json());
+  // check if there are any tweets
+  if (data.meta.result_count > 0) {
+    data.data.forEach(async (tweet) => {
+      if (!tweet.id || !tweet.author_id) return;
+      const author = data.includes?.users?.find((u) => u.id === tweet.author_id);
+      // check if the tweet already exists
+      const exists = await prisma.tweets.findUnique({
+        where: {
+          tweet_id: tweet.id,
+        },
+      });
+
+      if (!exists) {
+        console.log(JSON.stringify({
+          tweet_id: tweet.id,
+          tweet_text: tweet.text,
+          tweet_created_at: new Date(tweet.created_at || ''),
+          tweet_author_id: tweet.author_id,
+          tweet_author_name: author?.name || '',
+          tweet_author_username: author?.username || '',
+          tweet_author_profile_image_url: author?.profile_image_url,
+          tweet_author_created_at: new Date(tweet.created_at ? tweet.created_at : ''),
+        }, null, 2));
+        // if it doesn't exist, create it again
+        await prisma.tweets.create({
+          data: {
+            tweet_id: tweet.id,
+            tweet_text: tweet.text,
+            tweet_created_at: new Date(tweet.created_at || ''),
+            tweet_author_id: tweet.author_id,
+            tweet_author_name: author?.name || '',
+            tweet_author_username: author?.username || '',
+            tweet_author_profile_image_url: author?.profile_image_url,
+            tweet_author_created_at: new Date(tweet.created_at ? tweet.created_at : ''),
+          },
+        });
+      }
+    });
+  }
+  const tweets = await prisma.tweets.findMany({
+    orderBy: {
+      tweet_created_at: 'asc',
+    },
+    include: {
+      processed: true,
+    },
+    take: 100,
+  });
+
+  res.status(200).json(tweets);
 };
 
 export default Timeline;

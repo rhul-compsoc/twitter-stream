@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { NextApiHandler } from 'next';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../_prisma';
 
 type verifyType = {
   tweet_id: string;
@@ -8,7 +8,6 @@ type verifyType = {
 }
 
 const Verify: NextApiHandler = async (req, res) => {
-  const prisma = new PrismaClient();
   const { tweet_id, process_result } = req.body as verifyType;
   console.log(tweet_id, process_result);
   try {

@@ -1,5 +1,5 @@
 import { NextApiHandler } from 'next';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../_prisma';
 import { Tweetv2SearchResult } from 'twitter-api-v2';
 
 const TWITTER_BASEURL = 'https://api.twitter.com';
@@ -10,7 +10,6 @@ enum TWITTER_ENDPOINTS {
 }
 
 const Timeline: NextApiHandler = async (req, res) => {
-  const prisma = new PrismaClient();
   const url = new URL(TWITTER_ENDPOINTS.RECENT_TWEETS, TWITTER_BASEURL);
 
   Object.entries({
@@ -42,16 +41,6 @@ const Timeline: NextApiHandler = async (req, res) => {
       });
 
       if (!exists) {
-        console.log(JSON.stringify({
-          tweet_id: tweet.id,
-          tweet_text: tweet.text,
-          tweet_created_at: new Date(tweet.created_at || ''),
-          tweet_author_id: tweet.author_id,
-          tweet_author_name: author?.name || '',
-          tweet_author_username: author?.username || '',
-          tweet_author_profile_image_url: author?.profile_image_url,
-          tweet_author_created_at: new Date(tweet.created_at ? tweet.created_at : ''),
-        }, null, 2));
         // if it doesn't exist, create it again
         await prisma.tweets.create({
           data: {

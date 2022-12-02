@@ -36,6 +36,8 @@ const Wall: NextPageWithLayout = () => {
       return minutes < 15;
     });
     console.log('filteredTweets', filteredTweets);
+    const nextTweet = (currentTweet + 1) % (tweetsArr.length === 0 ? 1 : tweetsArr.length);
+    setCurrentTweet(nextTweet);
   };
   const nextScene = () => {
     setScene((scene + 1) % scenesCount);
@@ -57,7 +59,7 @@ const Wall: NextPageWithLayout = () => {
       }, 5 * 60 * 1000);
 
       setInterval(() => {
-        const nextTweet = (currentTweet + 1) % testTweets.length;
+        const nextTweet = (currentTweet + 1) % (tweetsArr.length === 0 ? 1 : tweetsArr.length);
         setCurrentTweet(nextTweet);
       }, 15 * 1000);
       setGotInitialTweets(true);
@@ -69,18 +71,18 @@ const Wall: NextPageWithLayout = () => {
       <div className="flex flex-1 justify-center p-20 align-middle">
         <div className="relative m-auto h-full w-full overflow-hidden rounded-2xl bg-slate-700 shadow-2xl">
           {
-            scene === 0 && (
+            (scene === 0 && tweetsArr.length > 0) && (
               <VaporWave
-                tweet={tweetsArr[currentTweet] ? tweetsArr[currentTweet].tweet_text : testTweets[currentTweet]}
+                tweet={tweetsArr[currentTweet].tweet_text}
                 // authorName={tweetsArr[currentTweet].author_name}
                 topBanner="The 80s90s00s Twitter Feed!"
               />
             )
           }
           {
-            scene === 1 && (
+            (scene === 1 && tweetsArr.length > 0) && (
               <Ninteens
-                tweet={tweetsArr[currentTweet] ? tweetsArr[currentTweet].tweet_text : testTweets[currentTweet]}
+                tweet={tweetsArr[currentTweet].tweet_text}
                 // authorName={tweetsArr[currentTweet].author_name}
                 topBanner="The 80s90s00s Twitter Feed!"
               />

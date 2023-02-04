@@ -30,7 +30,7 @@ const Login: NextPageWithLayout<{
                     {Object.values(providers).map((v: ClientSafeProvider) => (
                         <button
                             key={v.id}
-                            className="btn btn-wide mx-auto my-2 block"
+                            className="btn-wide btn mx-auto my-2 block"
                             onClick={() =>
                                 signIn(v.id, { callbackUrl: '/admin' })
                             }>
@@ -48,7 +48,7 @@ Login.getLayout = (page) => (
     <MainLayout className="flex h-screen w-screen">{page}</MainLayout>
 );
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
     const providers = await getProviders();
     return {
         props: { providers }

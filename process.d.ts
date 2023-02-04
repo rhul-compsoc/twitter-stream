@@ -6,5 +6,6 @@ declare namespace NodeJS {
         AZURE_AD_CLIENT_SECRET: string;
         AZURE_AD_TENANT_ID: string;
         TWITTER_API_BEARER: string;
+        DATABASE_URL: string;
     }
 }

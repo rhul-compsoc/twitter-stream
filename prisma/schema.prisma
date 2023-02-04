@@ -8,12 +8,24 @@ datasource db {
     relationMode = "prisma"
 }
 
+model Proccessed {
+    id               Int      @id @default(autoincrement())
+    tweet_id         String   @db.VarChar(255)
+    tweet            Tweet    @relation(fields: [tweet_id], references: [id])
+    proccessed_at    DateTime @default(now())
+    proccessed_by    String   @db.VarChar(255)
+    processed_result Boolean
+
+    @@index([tweet_id])
+}
+
 model Tweet {
-    id         String   @id @db.VarChar(255)
+    id         String       @id @db.VarChar(255)
     created_at DateTime
-    author     User     @relation(fields: [author_id], references: [id])
-    author_id  String   @db.VarChar(255)
-    text       String   @db.LongText
+    author     User         @relation(fields: [author_id], references: [id])
+    author_id  String       @db.VarChar(255)
+    text       String       @db.LongText
+    Proccessed Proccessed[]
 
     @@index([author_id])
 }

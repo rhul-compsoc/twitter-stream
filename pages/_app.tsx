@@ -18,17 +18,17 @@ type AppPropsWithLayout<T> = AppProps<T> & {
 const queryClient = new QueryClient();
 
 const App = ({
-  Component,
-  pageProps: { session, ...pageProps },
+    Component,
+    pageProps: { session, ...pageProps }
 }: AppPropsWithLayout<{ session: Session }>) => {
-  const getLayout = Component.getLayout ?? ((page) => page);
-  return (
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>
-        {getLayout(<Component {...pageProps} />)}
-      </SessionProvider>
-    </QueryClientProvider>
-  );
+    const getLayout = Component.getLayout ?? ((page) => page);
+    return (
+        <QueryClientProvider client={queryClient}>
+            <SessionProvider session={session}>
+                {getLayout(<Component {...pageProps} />)}
+            </SessionProvider>
+        </QueryClientProvider>
+    );
 };
 
 export default App;

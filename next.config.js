@@ -1,8 +1,5 @@
 module.exports = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: {
-    domains: ['pbs.twimg.com'],
-  },
+    images: {
+        domains: ['pbs.twimg.com']
+    }
 };

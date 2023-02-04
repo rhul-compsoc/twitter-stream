@@ -12,12 +12,12 @@ const IndexPage: NextPageWithLayout = () => {
                         This is the Compsoc Twitter Wall!
                     </h1>
                     <Link href="/wall">
-                        <button className="btn btn-outline btn-secondary btn-wide m-4 mx-auto block">
+                        <button className="btn btn-secondary btn-wide m-4 mx-auto block">
                             Wall
                         </button>
                     </Link>
                     <Link href="/login">
-                        <button className="btn btn-outline btn-secondary btn-wide m-4 mx-auto block">
+                        <button className="btn btn-secondary btn-wide m-4 mx-auto block">
                             Admin view
                         </button>
                     </Link>

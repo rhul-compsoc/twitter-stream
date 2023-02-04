@@ -1,7 +1,15 @@
-const tailwind = require('prettier-plugin-tailwindcss');
 const organizeImports = require('prettier-plugin-organize-imports');
+/**
+ * @type {import('@types/prettier').Plugin}
+ */
+const tailwind = require('prettier-plugin-tailwindcss');
+/**
+ * @type {import('@types/prettier').Plugin}
+ */
+const prisma = require('prettier-plugin-prisma');
 
 const plugins = [
+    prisma,
     {
         ...tailwind,
         parsers: {
@@ -23,7 +31,7 @@ const plugins = [
 ];
 
 /**
- * @type {import('@types/prettier').Options}
+ * @type {import('@types/prettier').Config}
  */
 module.exports = {
     plugins,
@@ -33,5 +41,11 @@ module.exports = {
     semi: true,
     singleQuote: true,
     printWidth: 80,
-    useTabs: false
+    useTabs: false,
+    overrides: [
+        {
+            files: '*.prisma',
+            options: { parser: 'prisma-parse' }
+        }
+    ]
 };

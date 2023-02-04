@@ -1,6 +1,5 @@
 import Footer from '@components/footer';
 import MainLayout from '@components/layouts/mainLayout';
-import { GetServerSidePropsContext } from 'next';
 import {
     ClientSafeProvider,
     getProviders,
@@ -49,7 +48,7 @@ Login.getLayout = (page) => (
     <MainLayout className="flex h-screen w-screen">{page}</MainLayout>
 );
 
-export async function getServerSideProps(_: GetServerSidePropsContext) {
+export async function getStaticProps() {
     const providers = await getProviders();
     return {
         props: { providers }

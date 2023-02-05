@@ -13,27 +13,48 @@ const Wall: NextPageWithLayout = () => {
             (await fetch('/api/tweets/get_by/valid')).json() as Promise<{
                 success: true;
                 tweets: (Tweet & { author: User })[];
-            }>
+            }>,
+        { refetchInterval: 25000, refetchIntervalInBackground: true }
     );
 
     const [tweetIndex, setTweetIndex] = useState(0);
 
     useEffect(() => {
-        if (tweets?.data?.tweets && (tweets?.data?.tweets?.length || 0) > 0)
-            setTweetIndex((p) => {
-                const result = ++p - (++p % tweets.data.tweets.length);
-                console.log(result);
-                return result;
-            });
+        if (tweets?.data?.tweets && (tweets?.data?.tweets?.length || 0)) {
+            {
+                const interval = setInterval(
+                    () =>
+                        setTweetIndex((p) => {
+                            const result = (p + 1) % tweets.data.tweets.length;
+                            console.log(result);
+                            return result;
+                        }),
+                    5000
+                );
+
+                return () => clearInterval(interval);
+            }
+        }
     }, [tweets?.data?.tweets?.length]);
 
-    if (tweets.isSuccess)
+    if (tweets.isSuccess && tweets.data.tweets.length > 0)
         return (
             <>
                 <VaporWave
                     topBanner="The 80s90s00s Twitter Feed!"
                     tweet={tweets.data.tweets[tweetIndex].text}
                     author={`by ${tweets.data.tweets[tweetIndex].author.name}`}
+                />
+                <Footer />
+            </>
+        );
+    if (tweets.isSuccess && tweets.data.tweets.length == 0)
+        return (
+            <>
+                <VaporWave
+                    topBanner="The 80s90s00s Twitter Feed!"
+                    tweet="No tweets to display!"
+                    author=""
                 />
                 <Footer />
             </>

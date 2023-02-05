@@ -17,25 +17,27 @@ const Navbar: React.FC = () => {
             </h1>
 
             <div className="flex-none">
-                <ul className="menu menu-horizontal gap-3 p-0">
-                    <li>
-                        <Link href="/admin">TBD</Link>
-                    </li>
-                    <li>
-                        <Link href="/admin/valid" className="hover:text-white">
-                            Verified
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/admin/invalid">Banned</Link>
-                    </li>
-                    <li>
-                        <button
-                            onClick={() => {
-                                signOut();
-                            }}>
-                            logout
-                        </button>
+                <ul className="menu btn-group menu-horizontal p-0">
+                    <Link className="btn w-24" href="/admin">
+                        TBD
+                    </Link>
+
+                    <Link className="btn btn-primary w-24" href="/admin/valid">
+                        Verified
+                    </Link>
+
+                    <Link
+                        className="btn btn-secondary w-24"
+                        href="/admin/invalid">
+                        Banned
+                    </Link>
+
+                    <li
+                        className="btn btn-accent w-24"
+                        onClick={() => {
+                            signOut();
+                        }}>
+                        logout
                     </li>
                 </ul>
             </div>

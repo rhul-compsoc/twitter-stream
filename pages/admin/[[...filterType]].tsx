@@ -15,6 +15,8 @@ const Row: React.FC<{ tweet: TweetV2; author?: UserV2 }> = ({
 }) => {
     const { query } = useRouter();
 
+    console.log(query);
+
     return (
         <div className="my-2 flex rounded-xl bg-accent p-5 text-accent-content">
             <div className="flex-1">

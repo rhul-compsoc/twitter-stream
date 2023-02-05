@@ -11,7 +11,7 @@ const GetTweetByFilter: NextApiHandler = async (req, res) => {
     let filterBy;
     if (filter == undefined) filterBy = { is: null };
     else if (filter.length == 1 && ['valid', 'invalid'].includes(filter[0]))
-        filterBy = { processed_result: filter[0] == 'valid' };
+        filterBy = { processed_result: filter[0] == 'invalid' };
 
     // if the filter slug is not valid, return 400
     if (filterBy == undefined) return res.status(400).end();

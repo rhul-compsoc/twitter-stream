@@ -1,10 +1,8 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-param-reassign */
-/* eslint-disable react/style-prop-object */
+'use client';
 import React from 'react';
 import css from './VaporWave.module.css';
 
-export const getMaxPerLine = (size: number) => Math.floor(3 * Math.sqrt(size));
+export const getMaxPerLine = (size: number) => Math.floor(4 * Math.sqrt(size));
 
 export const splitText = (text: string) =>
     text.split(' ').reduce((acc: string[], c: string, i, arr) => {
@@ -35,14 +33,19 @@ export const splitText = (text: string) =>
  */
 const VaporWave = ({
     tweet,
-    topBanner
+    topBanner,
+    author
 }: {
     tweet: string;
     topBanner: string;
+    author: string;
 }) => (
     <div>
         <div
-            className={`${css.background80s} ${css.animatedClouds} ${css.stars} ${css.parentContainer} z-50`}>
+            className={
+                `${css.background80s} ${css.animatedClouds} ${css.stars} ${css.parentContainer}` +
+                ' z-1'
+            }>
             <div className={css.sun} />
             <div className={css.grid} />
             <div className={css.mountains}>
@@ -72,7 +75,25 @@ const VaporWave = ({
                         style={
                             {
                                 '--shine-delay': `${i / 1.5}s`,
-                                fontSize: `${(1 / tweet.length) * 150 + 2.5}em`
+                                fontSize: `${(1 / tweet.length) * 150 + 2.5}ch`
+                            } as React.CSSProperties
+                        }
+                        data-text={line}
+                        key={i}>
+                        {line}
+                        {Math.random() > 0.5 && (
+                            <span className={`z-50 ${css.spark}`} />
+                        )}
+                    </div>
+                ))}
+
+                {splitText(author).map((line, i) => (
+                    <div
+                        className={`${css.chrome} ${css.shine}`}
+                        style={
+                            {
+                                '--shine-delay': `${i / 1.5}s`,
+                                fontSize: `${(1 / author.length) * 20 + 2.5}ch`
                             } as React.CSSProperties
                         }
                         data-text={line}

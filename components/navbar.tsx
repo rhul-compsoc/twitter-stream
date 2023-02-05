@@ -7,7 +7,9 @@ const Navbar: React.FC = () => {
     return (
         <div className="navbar relative bg-base-300 shadow-xl">
             <div className="flex-1">
-                <a className="btn btn-ghost text-xl normal-case">SU Twitter Feed</a>
+                <a className="btn btn-ghost text-xl normal-case">
+                    SU Twitter Feed
+                </a>
             </div>
 
             <h1 className="absolute left-1/2 -translate-x-1/2 text-xl font-bold normal-case">
@@ -20,12 +22,12 @@ const Navbar: React.FC = () => {
                         <Link href="/admin">TBD</Link>
                     </li>
                     <li>
-                        <Link href="/admin/good" className="hover:text-white">
+                        <Link href="/admin/valid" className="hover:text-white">
                             Verified
                         </Link>
                     </li>
                     <li>
-                        <Link href="/admin/denied">Banned</Link>
+                        <Link href="/admin/invalid">Banned</Link>
                     </li>
                     <li>
                         <button

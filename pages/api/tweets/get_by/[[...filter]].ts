@@ -18,7 +18,7 @@ const GetTweetByFilter: NextApiHandler = async (req, res) => {
 
     const tweets = await prisma.tweet.findMany({
         where: { processed: filterBy },
-        include: { processed: true }
+        include: { processed: true, author: true }
     });
 
     return res.status(200).json({ success: true, tweets });

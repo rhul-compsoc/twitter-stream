@@ -1,35 +1,54 @@
+import { Processed, Tweet, User } from '@prisma/client';
+import { useQuery } from '@tanstack/react-query';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { TweetV2, UserV2 } from 'twitter-api-v2';
 import Navbar from '../../components/navbar';
 
-const fetchTimeline = async () => {
-    const req = await fetch('/api/main/tweets');
-    return req.json();
+const fetchTimeline = async (filter = '') => {
+    const req = await fetch('/api/tweets/get_by/' + filter, {
+        method: 'GET'
+    });
+    return req.json() as Promise<{
+        success: boolean;
+        tweets?: (Tweet & {
+            processed: Processed | null;
+            author: User | null;
+        })[];
+    }>;
 };
 
-const Row: React.FC<{ tweet: TweetV2; author?: UserV2 }> = ({
-    tweet,
-    author
-}) => {
+type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
+
+const Row: React.FC<
+    ArrayElement<
+        NonNullable<Awaited<ReturnType<typeof fetchTimeline>>['tweets']>
+    >
+> = (props) => {
     const { query } = useRouter();
 
-    console.log(query);
+    const post_process = (deny: boolean) => {
+        fetch('/api/tweets/process', {
+            method: 'POST',
+            body: JSON.stringify({ id: props.id, denied: deny })
+        });
+    };
 
     return (
         <div className="my-2 flex rounded-xl bg-accent p-5 text-accent-content">
             <div className="flex-1">
-                {author?.name} {author?.username}:{tweet.text}
+                {props.author?.name} {props.author?.username}:{props.text}
             </div>
             <div className="btn-group">
                 <button
-                    disabled={query?.filterType == 'good'}
+                    disabled={query?.filterType == 'valid'}
+                    onClick={() => post_process(false)}
                     className="btn btn-success">
                     Allow
                 </button>
                 <button
-                    disabled={query?.filterType == 'denied'}
+                    disabled={query?.filterType == 'invalid'}
+                    onClick={() => post_process(true)}
                     className="btn btn-error">
                     Deny
                 </button>
@@ -39,6 +58,12 @@ const Row: React.FC<{ tweet: TweetV2; author?: UserV2 }> = ({
 };
 
 const Admin: NextPage = () => {
+    const { query } = useRouter();
+
+    const request = useQuery(['timeline', query?.filterType?.[0]], () =>
+        fetchTimeline(query?.filterType?.[0])
+    );
+
     return (
         <>
             <Head>
@@ -52,12 +77,9 @@ const Admin: NextPage = () => {
             </h1>
 
             <div className="mx-auto max-w-4xl">
-                <Row
-                    // @ts-expect-error
-                    tweet={{ text: 'test' }}
-                    // @ts-expect-error
-                    author={{ name: 'test', username: 'sadfasdf' }}
-                />
+                {request.isLoading && <div>Loading...</div>}
+                {request.isSuccess &&
+                    request.data.tweets?.map((v, i) => <Row {...v} key={i} />)}
             </div>
         </>
     );

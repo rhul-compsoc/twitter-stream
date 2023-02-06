@@ -27,7 +27,6 @@ TWITTER_API_BEARER='asdf'
 
 If you are creating a new theme, please name the branch `theme-[name_of_theme]`, this way we know what each branch is for!
 
-
 ## Running
 
 Then, as long as you have a working internet connection, run `pnpm dev` to get started!

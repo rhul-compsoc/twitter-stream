@@ -2,10 +2,8 @@ declare namespace NodeJS {
     export interface ProcessEnv {
         NEXTAUTH_URL: string;
         NEXTAUTH_SECRET: string;
-        AZURE_AD_CLIENT_ID: string;
-        AZURE_AD_CLIENT_SECRET: string;
-        AZURE_AD_TENANT_ID: string;
-        TWITTER_API_BEARER: string;
+        DISCORD_CLIENT_ID: string;
+        DISCORD_CLIENT_SECRET: string;
         DATABASE_URL: string;
     }
 }

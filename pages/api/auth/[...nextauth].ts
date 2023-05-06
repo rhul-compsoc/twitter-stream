@@ -30,7 +30,6 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, account }){
             if (account){
                 token.accessToken = account.access_token
-            console.log(token.accessToken);
             }
 
             return token;
@@ -44,20 +43,21 @@ export const authOptions: NextAuthOptions = {
                 return false;
             }
 
+            // Check if the user is on the server
             const guilds = await fetchJSONData(`${DISCORD_API}/users/@me/guilds`, token);
 
             if(!guilds.find((e: {id: string}) => e.id == process.env.DISCORD_AUTH_SERVER_ID)) {
-                console.log("User is NOT on needed server.")
                 return false;
             }
 
+            // Check if the user has the needed roles
             const memberInfo = await fetchJSONData(`${DISCORD_API}/users/@me/guilds/${process.env.DISCORD_AUTH_SERVER_ID}/member`, token);
 
             if(!memberInfo.roles.some((val: string) => authRoles.includes(val))) {
-                console.log("User does NOT have needed roles.")
                 return false;   
             }
 
+            // Authorised user!
             return true;
         },
         async redirect({ url, baseUrl }) {

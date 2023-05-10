@@ -10,16 +10,16 @@ datasource db {
 
 model Processed {
     id               Int      @id @default(autoincrement())
-    tweet_id         String   @unique @db.VarChar(255)
-    tweet            Tweet    @relation(fields: [tweet_id], references: [id])
+    msg_id           String   @unique @db.VarChar(255)
+    msg              Message    @relation(fields: [msg_id], references: [id])
     processed_at     DateTime @default(now())
     processed_by     String   @db.VarChar(255)
     processed_result Boolean
 
-    @@index([tweet_id])
+    @@index([msg_id])
 }
 
-model Tweet {
+model Message {
     id         String     @id @db.VarChar(255)
     created_at DateTime
     author     User       @relation(fields: [author_id], references: [id])
@@ -27,13 +27,14 @@ model Tweet {
     text       String     @db.LongText
     processed  Processed?
 
-    @@index([author_id])
+    @@index([author_id])    
 }
 
 model User {
     id                String  @id @db.VarChar(255)
     name              String  @db.VarChar(255)
     username          String  @db.VarChar(255)
+    accent_colour     String  @db.VarChar(10)
     profile_image_url String  @default("") @db.VarChar(255)
-    Tweet             Tweet[]
+    Message           Message[]
 }

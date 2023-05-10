@@ -10,8 +10,10 @@ Currently this is all the stuff I can think of that needs doing.
 Feel free to add if you think anything else needs to be added!
 
 - [x] Admin authentication using Discord OAuth
-- [ ] Conversion and generalisation of Tweets to Messages
-    - [ ] Updating schema to make it more general
+- [ ] Conversion and generalisation of Tweets to Messages (worked on by Leo)
+    - [x] Updating schema to make it more general
+    - [ ] Create endpoint for message submission, and receiving
+        - [ ] Rate limiting, some form of spam protection
     - [ ] Updating UI to make it less specific to Twitter
     - [ ] Testing the stuff
 - [ ] Message submission methods

@@ -16,7 +16,7 @@ const GetTweetByFilter: NextApiHandler = async (req, res) => {
     // if the filter slug is not valid, return 400
     if (filterBy == undefined) return res.status(400).end();
 
-    const tweets = await prisma.tweet.findMany({
+    const tweets = await prisma.message.findMany({
         where: { processed: filterBy },
         include: { processed: true, author: true }
     });

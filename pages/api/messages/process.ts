@@ -27,9 +27,9 @@ const Process: NextApiHandler = async (req, res) => {
     const { id, denied } = z_parse.data;
 
     const db_insert_result = await prisma.processed.upsert({
-        where: { tweet_id: id },
+        where: { msg_id: id },
         create: {
-            tweet_id: id,
+            msg_id: id,
             processed_result: denied,
             processed_by: session.user.name
         },

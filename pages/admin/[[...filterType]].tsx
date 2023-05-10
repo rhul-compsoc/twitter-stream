@@ -1,4 +1,4 @@
-import { Processed, Tweet, User } from '@prisma/client';
+import { Processed, Message, User } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -6,12 +6,12 @@ import { useRouter } from 'next/router';
 import Navbar from '../../components/navbar';
 
 const fetchTimeline = async (filter = '') => {
-    const req = await fetch('/api/tweets/get_by/' + filter, {
+    const req = await fetch('/api/messages/get_by/' + filter, {
         method: 'GET'
     });
     return req.json() as Promise<{
         success: boolean;
-        tweets?: (Tweet & {
+        messages?: (Message & {
             processed: Processed | null;
             author: User | null;
         })[];
@@ -22,13 +22,13 @@ type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
 const Row: React.FC<
     ArrayElement<
-        NonNullable<Awaited<ReturnType<typeof fetchTimeline>>['tweets']>
+        NonNullable<Awaited<ReturnType<typeof fetchTimeline>>['messages']>
     >
 > = (props) => {
     const { query } = useRouter();
 
     const post_process = (deny: boolean) => {
-        fetch('/api/tweets/process', {
+        fetch('/api/messages/process', {
             method: 'POST',
             body: JSON.stringify({ id: props.id, denied: deny })
         });
@@ -79,7 +79,7 @@ const Admin: NextPage = () => {
             <div className="mx-auto max-w-4xl">
                 {request.isLoading && <div>Loading...</div>}
                 {request.isSuccess &&
-                    request.data.tweets?.map((v, i) => <Row {...v} key={i} />)}
+                    request.data.messages?.map((v, i) => <Row {...v} key={i} />)}
             </div>
         </>
     );

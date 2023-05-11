@@ -3,7 +3,7 @@ import { NextApiHandler } from 'next';
 
 const prisma = new PrismaClient();
 
-const GetTweetByFilter: NextApiHandler = async (req, res) => {
+const GetMessageByFilter: NextApiHandler = async (req, res) => {
     if (req.method !== 'GET') return res.status(405).end();
 
     const { filter } = req.query;
@@ -24,4 +24,4 @@ const GetTweetByFilter: NextApiHandler = async (req, res) => {
     return res.status(200).json({ success: true, messages });
 };
 
-export default GetTweetByFilter;
+export default GetMessageByFilter;

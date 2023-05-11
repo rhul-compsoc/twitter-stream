@@ -40,10 +40,14 @@ Before developing please make sure you have an `.env.local` file in the repo hom
 
 ```env
 DATABASE_URL="mysql://someone@somewhere/someplace"
+
 DISCORD_CLIENT_ID="xxxxxxxxxxxxxxxxxx"
 DISCORD_CLIENT_SECRET="Opppan_gangnam_style"
 DISCORD_AUTH_SERVER_ID="xxxxxxxxxxxxxxxx"
 DISCORD_AUTH_ROLES='["xxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxx"]'
+
+TRUSTED_AGENT_SECRET="some_secret"
+
 NEXTAUTH_URL='http://localhost:3000'
 NEXTAUTH_SECRET='something_secret'
 ```

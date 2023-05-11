@@ -3,7 +3,7 @@ import { NextApiHandler } from 'next';
 
 const prisma = new PrismaClient();
 
-const GetTweetByFilter: NextApiHandler = async (req, res) => {
+const GetMessageByFilter: NextApiHandler = async (req, res) => {
     if (req.method !== 'GET') return res.status(405).end();
 
     const { filter } = req.query;
@@ -16,12 +16,12 @@ const GetTweetByFilter: NextApiHandler = async (req, res) => {
     // if the filter slug is not valid, return 400
     if (filterBy == undefined) return res.status(400).end();
 
-    const tweets = await prisma.tweet.findMany({
+    const messages = await prisma.message.findMany({
         where: { processed: filterBy },
         include: { processed: true, author: true }
     });
 
-    return res.status(200).json({ success: true, tweets });
+    return res.status(200).json({ success: true, messages });
 };
 
-export default GetTweetByFilter;
+export default GetMessageByFilter;

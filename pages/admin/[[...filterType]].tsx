@@ -1,5 +1,5 @@
 import { Processed, Message, User } from '@prisma/client';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -26,13 +26,15 @@ const Row: React.FC<
     >
 > = (props) => {
     const { query } = useRouter();
+    const queryClient = useQueryClient();
 
-    const post_process = (deny: boolean) => {
-        fetch('/api/messages/process', {
+    const postProcess = useMutation({
+        mutationFn: (deny: boolean) => fetch('/api/messages/process', {
             method: 'POST',
             body: JSON.stringify({ id: props.id, denied: deny })
-        });
-    };
+        }),
+        onSuccess: () => queryClient.invalidateQueries({queryKey: ['timeline', query?.filterType?.[0]]})
+    })
 
     return (
         <div className="my-2 flex rounded-xl bg-accent p-5 text-accent-content">
@@ -42,13 +44,13 @@ const Row: React.FC<
             <div className="btn-group">
                 <button
                     disabled={query?.filterType == 'valid'}
-                    onClick={() => post_process(false)}
+                    onClick={() => postProcess.mutate(false)}
                     className="btn btn-success">
                     Allow
                 </button>
                 <button
                     disabled={query?.filterType == 'invalid'}
-                    onClick={() => post_process(true)}
+                    onClick={() => postProcess.mutate(true)}
                     className="btn btn-error">
                     Deny
                 </button>

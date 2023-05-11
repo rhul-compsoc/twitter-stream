@@ -23,14 +23,17 @@ const SubmitMessage: NextApiHandler = async (req, res) => {
     const users = req.body.users;
     const uId = GetCookieByKey("id", req.headers.cookie ?? "");
 
+    // Check if the client has provided a secret to prove they are trusted
     const secretPresent = AGENT_SECRET_PROVIDED && (req.body.secret != undefined) ? req.body.secret == TRUSTED_AGENT_SECRET : false;
 
+    // Validate the request 
     if (req.method !== "POST" || req.headers['content-type'] !== "application/json") return res.status(405).json(ResultConstructor(false, 0, "Invalid request."))
     if (!Array.isArray(messages) || !Array.isArray(users)) return res.status(400).json(ResultConstructor(false, 0, "Missing messages or users field."))
 
     if (messages.length < 1)
         return res.status(400).json(ResultConstructor(false, 0, "No messages provided."))
 
+    // If the user has not provided an identifier and isn't a trusted agent
     if (uId == "" && !secretPresent)
         return res.status(400).json(ResultConstructor(false, 0, "Cannot generate identifier."));
 
@@ -46,6 +49,7 @@ const SubmitMessage: NextApiHandler = async (req, res) => {
         skipDuplicates: true
     })
 
+    // TODO: Add check for duplicate comment spam
     await prisma.message.createMany({
         data: messages.map((m) => ({
             id: secretPresent? m.id : `${uId}-${randomUUID()}`,
@@ -55,7 +59,6 @@ const SubmitMessage: NextApiHandler = async (req, res) => {
         })) || [],
         skipDuplicates: true
     })
-
 
     return res.status(200).json(ResultConstructor(true, messages.length, `${messages.length} message(s) added!`))
 }

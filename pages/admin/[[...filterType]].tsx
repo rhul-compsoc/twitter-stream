@@ -4,6 +4,9 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Navbar from '../../components/navbar';
+import Spinner from '@components/spinner';
+
+import { XCircleIcon } from '@heroicons/react/24/outline'
 
 const fetchTimeline = async (filter = '') => {
     const req = await fetch('/api/messages/get_by/' + filter, {
@@ -74,12 +77,11 @@ const Admin: NextPage = () => {
 
             <Navbar />
 
-            <h1 className="my-2 text-center text-2xl font-bold capitalize">
-                Admin User Detected
-            </h1>
-
             <div className="mx-auto max-w-4xl">
-                {request.isLoading && <div>Loading...</div>}
+                {request.isLoading && (<span><Spinner className="h-24 w-24"/><div>Fetching messages...</div></span>)}
+                {request.isError && (<span><XCircleIcon className="h-24 w-24"/><div>Failed to fetch messages</div></span>)}
+                {request.isSuccess && (request.data.messages?.length == 0) && (<div>It's quiet here...</div>)}
+
                 {request.isSuccess &&
                     request.data.messages?.map((v, i) => <Row {...v} key={i} />)}
             </div>

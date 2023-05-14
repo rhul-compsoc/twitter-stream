@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import MainLayout from '../components/layouts/mainLayout';
 import { NextPageWithLayout } from './_app';
+import Spinner from '@components/spinner';
 
 const Wall: NextPageWithLayout = () => {
     const message = useQuery(
@@ -60,7 +61,7 @@ const Wall: NextPageWithLayout = () => {
             </>
         );
 
-    return <div>Loading...</div>;
+    return (<span className="flex flex-col items-center p-4"><Spinner className="h-24 w-24" /><div className="text-2xl font-bold">Loading...</div></span>);
 };
 
 Wall.getLayout = (page) => (

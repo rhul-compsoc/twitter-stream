@@ -95,7 +95,7 @@ const Admin: NextPage = () => {
 
                 {request.isLoading && (<span className="flex flex-col items-center p-4"><Spinner className="h-24 w-24"/><span className="text-2xl font-bold">Loading</span>Fetching messages...</span>)}
                 {request.isError && (<span className="flex flex-col items-center p-4"><XCircleIcon className="h-24 w-24"/><span className="text-2xl font-bold">Failed to fetch messages</span><code>{request.error?.toString()}</code></span>)}
-                {request.isSuccess && (request.data.messages?.length == 0) && (<span className="flex flex-col items-center p-4"><ChatBubbleLeftRightIcon className="h-24 w-24" /><span className="text-2xl font-bold">It's quiet here...</span>No unmoderated messages.</span>)}
+                {request.isSuccess && (request.data.messages?.length == 0) && (<span className="flex flex-col items-center p-4"><ChatBubbleLeftRightIcon className="h-24 w-24" /><span className="text-2xl font-bold">It's quiet here...</span>No messages to display.</span>)}
 
                 {request.isSuccess &&
                     request.data.messages?.map((v, i) => <Row {...v} key={i} />)}

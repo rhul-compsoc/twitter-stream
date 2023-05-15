@@ -21,17 +21,6 @@ const fetchTimeline = async (filter = '') => {
     }>;
 };
 
-const determineTitle = (filter: string) => {
-    switch(filter) {
-        case "valid":
-            return "Accepted";
-        case "invalid":
-            return "Denied";
-        default:
-            return "Unmoderated";
-    }
-}
-
 type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
 const Row: React.FC<
@@ -80,8 +69,6 @@ const Admin: NextPage = () => {
         fetchTimeline(query?.filterType?.[0])
     );
 
-    console.log(request.error)
-
     return (
         <>
             <Head>
@@ -91,8 +78,6 @@ const Admin: NextPage = () => {
             <Navbar />
 
             <div className="mx-auto max-w-4xl">
-                <span className="text-2xl">{determineTitle(query?.filterType?.[0] ?? "")} Messages</span>
-
                 {request.isLoading && (<span className="flex flex-col items-center p-4"><Spinner className="h-24 w-24"/><span className="text-2xl font-bold">Loading</span>Fetching messages...</span>)}
                 {request.isError && (<span className="flex flex-col items-center p-4"><XCircleIcon className="h-24 w-24"/><span className="text-2xl font-bold">Failed to fetch messages</span><code>{request.error?.toString()}</code></span>)}
                 {request.isSuccess && (request.data.messages?.length == 0) && (<span className="flex flex-col items-center p-4"><ChatBubbleLeftRightIcon className="h-24 w-24" /><span className="text-2xl font-bold">It's quiet here...</span>No messages to display.</span>)}

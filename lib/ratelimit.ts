@@ -60,8 +60,8 @@ export interface RateLimitContextBase {
   
   const rateLimited: OnRateLimit = ({ id, response }) => {
     return new Response(
-      JSON.stringify({
-        error: { message: `API rate limit exceeded for ${id}` },
+      JSON.stringify({ success: false,
+        error: `API rate limit exceeded for ${id}`,
       }),
       {
         status: 429,

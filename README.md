@@ -10,18 +10,18 @@ Currently this is all the stuff I can think of that needs doing.
 
 Feel free to add if you think anything else needs to be added!
 
--   [x] Admin authentication using Discord OAuth
--   [ ] Conversion and generalisation of Tweets to Messages (worked on by Leo)
-    -   [x] Updating schema to make it more general
-    -   [x] Create endpoint for message submission, and receiving
-        -   [ ] Rate limiting, some form of spam protection
-    -   [ ] Updating UI to make it less specific to Twitter
-    -   [ ] Testing the stuff
--   [ ] Message submission methods
-    -   [ ] Discord message submission
-    -   [ ] Form based submission (using Zod)
-    -   [ ] LinkedIn submission wwwwww
--   [ ] Clean up, document, and polish
+- [x] Admin authentication using Discord OAuth
+- [x] Conversion and generalisation of Tweets to Messages (done by Charlie and Leo)
+    - [x] Updating schema to make it more general
+    - [x] Create endpoint for message submission, and receiving
+        - [x] Rate limiting, some form of spam protection
+    - [x] Updating UI to make it less specific to Twitter
+    - [x] Testing the stuff
+- [ ] Message submission methods
+    - [ ] Discord message submission
+    - [ ] Form based submission (using Zod)
+    - [ ] LinkedIn submission wwwwww
+- [ ] Clean up, document, and polish
 
 **IMPORTANT**: Please inform the rest of the team or edit this README to let other people know you are working on a feature.
 

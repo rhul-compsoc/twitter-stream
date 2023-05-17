@@ -36,7 +36,7 @@ const plugins = [
 module.exports = {
     plugins,
     trailingComma: 'none',
-    bracketSameLine: true,
+    bracketSameLine: false,
     tabWidth: 4,
     semi: true,
     singleQuote: true,

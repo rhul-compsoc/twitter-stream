@@ -1,26 +1,27 @@
 # ~~twitter-stream v2~~
+
 # compsoc-stream v2.5
 
 Due to changes to the Twitter API, we decided to make this a little more general and add additional ways for users to send messages.
 
 ## What needs doing
 
-Currently this is all the stuff I can think of that needs doing. 
+Currently this is all the stuff I can think of that needs doing.
 
 Feel free to add if you think anything else needs to be added!
 
-- [x] Admin authentication using Discord OAuth
-- [ ] Conversion and generalisation of Tweets to Messages (worked on by Leo)
-    - [x] Updating schema to make it more general
-    - [x] Create endpoint for message submission, and receiving
-        - [ ] Rate limiting, some form of spam protection
-    - [ ] Updating UI to make it less specific to Twitter
-    - [ ] Testing the stuff
-- [ ] Message submission methods
-    - [ ] Discord message submission
-    - [ ] Form based submission (using Zod)
-    - [ ] LinkedIn submission wwwwww
-- [ ] Clean up, document, and polish
+-   [x] Admin authentication using Discord OAuth
+-   [ ] Conversion and generalisation of Tweets to Messages (worked on by Leo)
+    -   [x] Updating schema to make it more general
+    -   [x] Create endpoint for message submission, and receiving
+        -   [ ] Rate limiting, some form of spam protection
+    -   [ ] Updating UI to make it less specific to Twitter
+    -   [ ] Testing the stuff
+-   [ ] Message submission methods
+    -   [ ] Discord message submission
+    -   [ ] Form based submission (using Zod)
+    -   [ ] LinkedIn submission wwwwww
+-   [ ] Clean up, document, and polish
 
 **IMPORTANT**: Please inform the rest of the team or edit this README to let other people know you are working on a feature.
 
@@ -44,7 +45,7 @@ DATABASE_URL="mysql://someone@somewhere/someplace"
 DISCORD_CLIENT_ID="xxxxxxxxxxxxxxxxxx"
 DISCORD_CLIENT_SECRET="Opppan_gangnam_style"
 DISCORD_AUTH_SERVER_ID="xxxxxxxxxxxxxxxx"
-DISCORD_AUTH_ROLES='["xxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxx"]'
+DISCORD_AUTH_ROLES='role1_idxxxxxxxx role2_idxxxxxxxx'
 
 TRUSTED_AGENT_SECRET="some_secret"
 
@@ -61,4 +62,3 @@ If you are creating a new theme, please name the branch `theme-[name_of_theme]`,
 ## Running
 
 Then, as long as you have a working internet connection, run `pnpm dev` to get started!
-

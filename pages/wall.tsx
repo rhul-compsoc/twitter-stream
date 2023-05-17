@@ -1,11 +1,11 @@
 import Footer from '@components/footer';
+import Spinner from '@components/spinner';
 import VaporWave from '@components/themes/VaporWave';
 import { Message, User } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import MainLayout from '../components/layouts/mainLayout';
 import { NextPageWithLayout } from './_app';
-import Spinner from '@components/spinner';
 
 const Wall: NextPageWithLayout = () => {
     const message = useQuery(
@@ -26,7 +26,8 @@ const Wall: NextPageWithLayout = () => {
                 const interval = setInterval(
                     () =>
                         setMessageIndex((p) => {
-                            const result = (p + 1) % message.data.messages.length;
+                            const result =
+                                (p + 1) % message.data.messages.length;
                             console.log(result);
                             return result;
                         }),
@@ -53,7 +54,7 @@ const Wall: NextPageWithLayout = () => {
         return (
             <>
                 <VaporWave
-                    topBanner="The 80s90s00s Twitter Feed!"
+                    topBanner="The 80s90s00s Feed!"
                     tweet="No messages to display!"
                     author=""
                 />
@@ -61,7 +62,12 @@ const Wall: NextPageWithLayout = () => {
             </>
         );
 
-    return (<span className="flex flex-col items-center p-4"><Spinner className="h-24 w-24" /><div className="text-2xl font-bold">Loading...</div></span>);
+    return (
+        <span className="flex flex-col items-center p-4">
+            <Spinner className="h-24 w-24" />
+            <div className="text-2xl font-bold">Loading...</div>
+        </span>
+    );
 };
 
 Wall.getLayout = (page) => (

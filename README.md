@@ -42,13 +42,18 @@ Before developing please make sure you have an `.env.local` file in the repo hom
 ```env
 DATABASE_URL="mysql://someone@somewhere/someplace"
 
+# For admin panel, allows people on the specified
+# server with the specified roles.
 DISCORD_CLIENT_ID="xxxxxxxxxxxxxxxxxx"
 DISCORD_CLIENT_SECRET="Opppan_gangnam_style"
 DISCORD_AUTH_SERVER_ID="xxxxxxxxxxxxxxxx"
 DISCORD_AUTH_ROLES='role1_idxxxxxxxx role2_idxxxxxxxx'
 
-TRUSTED_AGENT_SECRET="some_secret"
+# Ratelimiting stuff, if you believe that is a problem.
+UPSTASH_REST_API_DOMAIN=some-magical-region.upstash.io
+UPSTASH_REST_API_TOKEN=I_am_very_secret
 
+# OAuth stuff - for the admin panel
 NEXTAUTH_URL='http://localhost:3000'
 NEXTAUTH_SECRET='something_secret'
 ```

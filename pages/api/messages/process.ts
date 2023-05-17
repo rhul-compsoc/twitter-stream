@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 const process_body = z.preprocess(
     (v) => JSON.parse(v as string),
     z.object({
-        id: z.string(),
+        id: z.number(),
         denied: z.boolean()
     })
 );
@@ -27,9 +27,9 @@ const Process: NextApiHandler = async (req, res) => {
     const { id, denied } = z_parse.data;
 
     const db_insert_result = await prisma.processed.upsert({
-        where: { msg_id: id },
+        where: { messageId: id },
         create: {
-            msg_id: id,
+            messageId: id,
             processed_result: denied,
             processed_by: session.user.name
         },

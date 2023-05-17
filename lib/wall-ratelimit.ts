@@ -1,9 +1,10 @@
+import { NextApiRequest } from 'next'
 import { initRateLimit, CountFn } from './ratelimit'
 import { upstashRest } from './upstash'
 
-export default function getIP(request: Request) {
-  const xff = request.headers.get('x-forwarded-for')
-  return xff ? xff.split(',')[0] : '127.0.0.1'
+export default function getIP(request: NextApiRequest) {
+  const xff = request.socket.remoteAddress;
+  return xff ?? '127.0.0.1'
 }
 
 export const ipRateLimit = initRateLimit((request) => ({

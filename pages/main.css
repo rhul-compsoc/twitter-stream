@@ -11,3 +11,13 @@
 body {
     margin: 0;
 }
+
+.qrCode {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    font-size: 20px;
+    padding: 20px;
+    text-align: center;
+    z-index: 999;
+}

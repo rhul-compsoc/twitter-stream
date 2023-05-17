@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import MainLayout from '../components/layouts/mainLayout';
 import { NextPageWithLayout } from './_app';
+import QrCode from '@components/qr_code';
 
 const Wall: NextPageWithLayout = () => {
     const message = useQuery(
@@ -47,6 +48,7 @@ const Wall: NextPageWithLayout = () => {
                     tweet={message.data.messages[messageIndex].message_text}
                     author={`by ${message.data.messages[messageIndex].message_name}`}
                 />
+                <QrCode />
                 <Footer />
             </>
         );
@@ -58,6 +60,7 @@ const Wall: NextPageWithLayout = () => {
                     tweet="No messages to display!"
                     author=""
                 />
+                <QrCode />
                 <Footer />
             </>
         );

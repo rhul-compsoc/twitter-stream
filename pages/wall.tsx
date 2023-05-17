@@ -1,7 +1,7 @@
 import Footer from '@components/footer';
 import Spinner from '@components/spinner';
 import VaporWave from '@components/themes/VaporWave';
-import { Message, User } from '@prisma/client';
+import { Message } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import MainLayout from '../components/layouts/mainLayout';
@@ -13,7 +13,7 @@ const Wall: NextPageWithLayout = () => {
         async () =>
             (await fetch('/api/messages/get_by/valid')).json() as Promise<{
                 success: true;
-                messages: (Message & { author: User })[];
+                messages: (Message)[];
             }>,
         { refetchInterval: 25000, refetchIntervalInBackground: true }
     );
@@ -44,8 +44,8 @@ const Wall: NextPageWithLayout = () => {
             <>
                 <VaporWave
                     topBanner="The 80s90s00s Twitter Feed!"
-                    tweet={message.data.messages[messageIndex].text}
-                    author={`by ${message.data.messages[messageIndex].author.name}`}
+                    tweet={message.data.messages[messageIndex].message_text}
+                    author={`by ${message.data.messages[messageIndex].message_name}`}
                 />
                 <Footer />
             </>

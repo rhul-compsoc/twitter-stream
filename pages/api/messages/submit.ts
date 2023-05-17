@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { ipRateLimit } from 'lib/wall-ratelimit';
+import { idRateLimit } from 'lib/wall-ratelimit';
 import { NextApiHandler } from 'next';
 import z from 'zod';
 
@@ -9,7 +9,7 @@ const RouteBodySchema = z.object({ name: z.string(), message: z.string() });
 
 // TODO: implement Rate limiting, trusted agents (e.g. Discord bot, etc.)
 const SubmitMessage: NextApiHandler = async (req, res) => {
-    const rateLimitRes = await ipRateLimit(req);
+    const rateLimitRes = await idRateLimit(req);
 
     if (rateLimitRes.status !== 200)
         return res.status(400).json(await rateLimitRes.json());

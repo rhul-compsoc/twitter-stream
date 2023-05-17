@@ -1,8 +1,10 @@
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Navbar: React.FC = () => {
     const session = useSession();
+    const { query } = useRouter();
 
     return (
         <div className="navbar relative bg-base-300 shadow-xl">
@@ -18,16 +20,32 @@ const Navbar: React.FC = () => {
 
             <div className="flex-none">
                 <ul className="menu btn-group menu-horizontal p-0">
-                    <Link className="btn w-24" href="/admin">
+                    <Link
+                        className={
+                            query?.filterType != undefined
+                                ? 'btn btn-warning w-24 text-black'
+                                : 'btn w-24'
+                        }
+                        href="/admin">
                         TBD
                     </Link>
 
-                    <Link className="btn btn-primary w-24" href="/admin/valid">
+                    <Link
+                        className={
+                            query?.filterType != 'valid'
+                                ? 'btn btn-primary w-24'
+                                : 'btn w-24'
+                        }
+                        href="/admin/valid">
                         Verified
                     </Link>
 
                     <Link
-                        className="btn btn-secondary w-24"
+                        className={
+                            query?.filterType != 'invalid'
+                                ? 'btn btn-secondary w-24'
+                                : 'btn w-24'
+                        }
                         href="/admin/invalid">
                         Banned
                     </Link>

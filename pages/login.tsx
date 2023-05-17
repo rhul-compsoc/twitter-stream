@@ -30,7 +30,7 @@ const Login: NextPageWithLayout<{
                     {Object.values(providers).map((v: ClientSafeProvider) => (
                         <button
                             key={v.id}
-                            className="btn-wide btn mx-auto my-2 block"
+                            className="btn btn-wide mx-auto my-2 block"
                             onClick={() =>
                                 signIn(v.id, { callbackUrl: '/admin' })
                             }>

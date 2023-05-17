@@ -10,31 +10,18 @@ datasource db {
 
 model Processed {
     id               Int      @id @default(autoincrement())
-    msg_id           String   @unique @db.VarChar(255)
-    msg              Message    @relation(fields: [msg_id], references: [id])
     processed_at     DateTime @default(now())
     processed_by     String   @db.VarChar(255)
     processed_result Boolean
-
-    @@index([msg_id])
+    Message          Message  @relation(fields: [messageId], references: [id])
+    messageId        Int      @unique
 }
 
 model Message {
-    id         String     @id @db.VarChar(255)
-    created_at DateTime
-    author     User       @relation(fields: [author_id], references: [id])
-    author_id  String     @db.VarChar(255)
-    text       String     @db.LongText
-    processed  Processed?
+    id           Int      @id @default(autoincrement())
+    created_at   DateTime @default(now()) @updatedAt
+    message_name String   @db.LongText
+    message_text String   @db.LongText
 
-    @@index([author_id])    
-}
-
-model User {
-    id                String  @id @db.VarChar(255)
-    name              String  @db.VarChar(255)
-    username          String  @db.VarChar(255)
-    accent_colour     String  @db.VarChar(10)
-    profile_image_url String  @default("") @db.VarChar(255)
-    Message           Message[]
+    Processed Processed?
 }

@@ -17,8 +17,8 @@ const GetMessageByFilter: NextApiHandler = async (req, res) => {
     if (filterBy == undefined) return res.status(400).end();
 
     const messages = await prisma.message.findMany({
-        where: { processed: filterBy },
-        include: { processed: true, author: true }
+        where: { Processed: filterBy },
+        include: { Processed: true }
     });
 
     return res.status(200).json({ success: true, messages });

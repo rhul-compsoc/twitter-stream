@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { ipRateLimit } from 'lib/wall-ratelimit';
 import { NextApiHandler } from 'next';
 import z from 'zod';
 
@@ -8,6 +9,10 @@ const RouteBodySchema = z.object({ name: z.string(), message: z.string() });
 
 // TODO: implement Rate limiting, trusted agents (e.g. Discord bot, etc.)
 const SubmitMessage: NextApiHandler = async (req, res) => {
+    const rateLimitRes = await ipRateLimit(req);
+
+    if (rateLimitRes.status !== 200) return rateLimitRes;
+
     if (req.method !== 'POST') {
         res.status(405).json({ success: false, error: 'Method not allowed' });
     }
@@ -20,7 +25,7 @@ const SubmitMessage: NextApiHandler = async (req, res) => {
             error: parsedBody.error.issues
         });
     }
-
+}
     // // Allow agents that are trusted to set values like IDs or Dates.
     // await prisma.user.createMany({
     //     data:

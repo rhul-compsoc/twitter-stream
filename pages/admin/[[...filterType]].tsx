@@ -1,5 +1,5 @@
 import Spinner from '@components/spinner';
-import { Message, Processed, User } from '@prisma/client';
+import { Message, Processed } from '@prisma/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -19,7 +19,6 @@ const fetchTimeline = async (filter = '') => {
         success: boolean;
         messages?: (Message & {
             processed: Processed | null;
-            author: User | null;
         })[];
     }>;
 };

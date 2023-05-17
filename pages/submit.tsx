@@ -4,14 +4,36 @@ import { Field, Form, Formik } from 'formik';
 import { useRef } from 'react';
 import z from 'zod';
 import { NextPageWithLayout } from './_app';
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
+import { useCookies } from 'react-cookie';
 
 const submitSchema = z.object({
     name: z.string().min(2, 'Minimum 2 chars long'),
     message: z.string().min(5, 'Minimum 5 chars long')
 });
 
+const getVisitorId = async () => {
+    if (typeof window === "undefined") return;
+
+    const [cookies, setCookie, removeCookie] = useCookies(['id'])
+    let stored = cookies.id;
+
+
+    if (!stored) {
+        const fpPromise = FingerprintJS.load();
+        const fp = await (await fpPromise).get();
+
+        stored = fp.visitorId;
+        setCookie("id", stored, {
+            path: "/"
+        })
+    }
+}
+
 const Submit: NextPageWithLayout = () => {
     const hasSubmitted = useRef(false);
+
+    getVisitorId();
 
     return (
         <>

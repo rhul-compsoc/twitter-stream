@@ -17,42 +17,29 @@ const SubmitMessage: NextApiHandler = async (req, res) => {
         res.status(405).json({ success: false, error: 'Method not allowed' });
     }
 
-    const parsedBody = RouteBodySchema.safeParse(req.body);
+    const parsedBody = RouteBodySchema.safeParse(JSON.parse(req.body));
 
     if (!parsedBody.success) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             error: parsedBody.error.issues
         });
     }
-}
-    // // Allow agents that are trusted to set values like IDs or Dates.
-    // await prisma.user.createMany({
-    //     data:
-    //         users.map((u) => ({
-    //          w ''
-    //         })) || [],
-    //     skipDuplicates: true
-    // });
 
-    // // TODO: Add check for duplicate comment spam
-    // await prisma.message.createMany({
-    //     data:
-    //         messages.map((m) => ({
-    //             id: secretPresent ? m.id : `${uId}-${randomUUID()}`,
-    //             text: m.text,
-    //             author_id: secretPresent ? m.author_id : uId,
-    //             created_at: secretPresent ? m.date : new Date()
-    //         })) || [],
-    //     skipDuplicates: true
-    // });
+    try {
+        await prisma.message.create({
+            data: {
+                message_name: parsedBody.data.name,
+                message_text: parsedBody.data.message
+            }
+        });
 
-//     return res
-//         .status(200)
-//         .json({
-//             success: true,
-//             message: `${messages.length} message(s) added!`
-//         });
-// };
+        return res
+            .status(200)
+            .json({ success: true, message: 'Message added!' });
+    } catch (e) {
+        return res.status(500).json({ success: false, error: e });
+    }
+};
 
 export default SubmitMessage;

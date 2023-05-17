@@ -1,3 +1,4 @@
+import Footer from '@components/footer';
 import MainLayout from '@components/layouts/mainLayout';
 import { Field, Form, Formik } from 'formik';
 import { useRef } from 'react';
@@ -32,7 +33,10 @@ const Submit: NextPageWithLayout = () => {
                 }}
                 onSubmit={(values) => {
                     if (!hasSubmitted.current) {
-                        console.log('only once');
+                        fetch('/api/messages/submit', {
+                            method: 'POST',
+                            body: JSON.stringify(values)
+                        });
                         hasSubmitted.current = true;
                     }
                 }}
@@ -82,6 +86,7 @@ const Submit: NextPageWithLayout = () => {
                     </Form>
                 )}
             </Formik>
+            <Footer></Footer>
         </>
     );
 };

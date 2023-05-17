@@ -19,7 +19,7 @@ Feel free to add if you think anything else needs to be added!
     - [x] Testing the stuff
 - [ ] Message submission methods
     - [ ] Discord message submission
-    - [ ] Form based submission (using Zod)
+    - [x] Form based submission (using Zod) (done by Charlie)
     - [ ] LinkedIn submission wwwwww
 - [ ] Clean up, document, and polish
 

@@ -9,14 +9,12 @@ datasource db {
 }
 
 model Processed {
-    id               Int       @id @default(autoincrement())
-    msg_id           String    @unique @db.VarChar(255)
-    processed_at     DateTime  @default(now())
-    processed_by     String    @db.VarChar(255)
+    id               Int      @id @default(autoincrement())
+    processed_at     DateTime @default(now())
+    processed_by     String   @db.VarChar(255)
     processed_result Boolean
-    Message          Message[]
-
-    @@index([msg_id])
+    Message          Message  @relation(fields: [messageId], references: [id])
+    messageId        Int      @unique
 }
 
 model Message {
@@ -25,9 +23,5 @@ model Message {
     message_name String   @db.LongText
     message_text String   @db.LongText
 
-    // fk to Processed
-    Processed   Processed? @relation(fields: [processedId], references: [id])
-    processedId Int?
-
-    @@index([processedId])
+    Processed Processed?
 }

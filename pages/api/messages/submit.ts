@@ -11,7 +11,8 @@ const RouteBodySchema = z.object({ name: z.string(), message: z.string() });
 const SubmitMessage: NextApiHandler = async (req, res) => {
     const rateLimitRes = await ipRateLimit(req);
 
-    if (rateLimitRes.status !== 200) return res.status(400).json(await rateLimitRes.json());
+    if (rateLimitRes.status !== 200)
+        return res.status(400).json(await rateLimitRes.json());
 
     if (req.method !== 'POST') {
         res.status(405).json({ success: false, error: 'Method not allowed' });

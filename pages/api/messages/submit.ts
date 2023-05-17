@@ -18,7 +18,7 @@ const SubmitMessage: NextApiHandler = async (req, res) => {
         res.status(405).json({ success: false, error: 'Method not allowed' });
     }
 
-    const parsedBody = RouteBodySchema.safeParse(req.body);
+    const parsedBody = RouteBodySchema.safeParse(JSON.parse(req.body));
 
     if (!parsedBody.success) {
         return res.status(400).json({

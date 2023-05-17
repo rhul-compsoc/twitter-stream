@@ -4,6 +4,8 @@
  * use it in your own projects.
  */
 
+import { NextApiRequest } from 'next';
+
 export interface RateLimitContextBase {
     id: string
     limit: number
@@ -12,20 +14,20 @@ export interface RateLimitContextBase {
   }
   
   export interface RateLimitContext extends RateLimitContextBase {
-    request: Request
+    request: NextApiRequest
     response: Response
     headers: readonly [string | null, string | null, string | null]
     onRateLimit: OnRateLimit
   }
   
   export type RateLimitHandler = (
-    request: Request,
+    request: NextApiRequest,
     response?: Response
   ) => Promise<RateLimitResult> | RateLimitResult
   
   export type RateLimitResult =
     | (RateLimitContextBase & {
-        request?: Request
+        request?: NextApiRequest
         response?: Response
         headers?: RateLimitHeaders
         onRateLimit?: OnRateLimit
@@ -117,7 +119,7 @@ export interface RateLimitContextBase {
   }
   
   export const initRateLimit = (fn: RateLimitHandler) =>
-    async function isRateLimited(request: Request, response?: Response) {
+    async function isRateLimited(request: NextApiRequest, response?: Response) {
       const ctx = await fn(request, response)
   
       if (ctx instanceof Response) return ctx

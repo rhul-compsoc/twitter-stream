@@ -45,6 +45,18 @@ const Row: React.FC<
             })
     });
 
+    const deleteThis = useMutation({
+        mutationFn: () =>
+            fetch('/api/messages/delete', {
+                method: 'POST',
+                body: JSON.stringify({ id: props.id })
+            }),
+        onSuccess: () =>
+            queryClient.invalidateQueries({
+                queryKey: ['timeline', query?.filterType?.[0]]
+            })
+    });
+
     return (
         <div className="my-2 flex rounded-xl bg-accent p-5 text-accent-content">
             <div className="flex-1">
@@ -57,6 +69,7 @@ const Row: React.FC<
                     {props.message_text}
                 </p>
             </div>
+
             <div className="btn-group">
                 <button
                     disabled={query?.filterType == 'valid'}
@@ -72,6 +85,10 @@ const Row: React.FC<
                 >
                     Deny
                 </button>
+                <button
+                    onClick={() => deleteThis.mutate()}
+                    className="btn-warning btn"
+                >Delete</button>
             </div>
         </div>
     );
